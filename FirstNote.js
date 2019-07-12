@@ -40,13 +40,14 @@ class FirstNote extends Note{
                  new NoteArrow(this.parent, this.frequency, "+", false)])
         }
     }
+    onclick(){}
     onmousemove(x,y){
         //convert mouse angle to this
 
         let angle = Math.atan2(y-this.parent.centerPos[1],x-this.parent.centerPos[0]);
        
-        let exponent = angle / Math.PI /2 //now from -0.5 to 0.5
+        let exponent = (angle) / Math.PI /2 //now from -0.5 to 0.5
 
-        this.frequency = 440 * 2**(1+exponent);
+        this.frequency = 440 * 2**(exponent);
     }
 }

@@ -57,7 +57,9 @@ class MainSimulation{
 
         let octaveNumber = Math.log(freq)/Math.log(2);
 
-        let angle = (octaveNumber % 1)*Math.PI*2;
+        let referenceOctaveNumber = Math.log(440)/Math.log(2); //orient the angles so that 440 is on the right
+
+        let angle = ((octaveNumber - referenceOctaveNumber) % 1)*Math.PI*2;
 
         let circlePos = [r*Math.cos(angle), r*Math.sin(angle)];
         return vecAdd(circlePos, this.centerPos);
