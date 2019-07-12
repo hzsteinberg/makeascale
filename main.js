@@ -22,7 +22,7 @@ class MainSimulation{
         }).toMaster()
 
         this.showEqualTemperamentLines = false;
-        this.numOctavesInEachDirection = 1.6;
+        this.highestAllowedInterval = 1.5**3;
     }
 
     start(){
@@ -177,12 +177,12 @@ class MainSimulation{
         if(!isIncreasing){
              this.objects.push(new FadingText(this, clickedFrequency, "* 3/2!", -0.003));
 
-             if(newFrequency < this.fundamentalFreq * (2**this.numOctavesInEachDirection)){
+             if(newFrequency < this.fundamentalFreq * this.highestAllowedInterval){
                 this.objects.push(new NoteArrow(this, newFrequency, "+", false));
              }
         }else{
              this.objects.push(new FadingText(this, clickedFrequency, "* 2/3!", 0.003));
-             if(newFrequency > this.fundamentalFreq / (2**this.numOctavesInEachDirection)){
+             if(newFrequency > this.fundamentalFreq / this.highestAllowedInterval){
                  this.objects.push(new NoteArrow(this, newFrequency, "+", true));
              }
 
