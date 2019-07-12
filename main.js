@@ -3,9 +3,9 @@ let synth = null;
 class MainSimulation{
 
     constructor(){
-        this.fundamentalFreq = 440;
+        this.fundamentalFreq = 812;
 
-        this.objects = [new Note(this, this.fundamentalFreq), new NoteArrow(this, this.fundamentalFreq, "+", true),  new NoteArrow(this, this.fundamentalFreq, "+", false)]; //todo: click to place note
+        this.objects = [new FirstNote(this)]; //todo: click to place note
 
 
         this.synth = new Tone.PolySynth(16, Tone.Synth, {
@@ -60,10 +60,14 @@ class MainSimulation{
         let angle = (octaveNumber % 1)*Math.PI*2;
 
         let circlePos = [r*Math.cos(angle), r*Math.sin(angle)];
-
-        let linearPos = 50+40*octaveNumber;
-
         return vecAdd(circlePos, this.centerPos);
+
+        //on a line instead of a circle. currently broken
+        let numOctavesInLine = 2;
+        let middlePitch = Math.log(this.fundamentalFreq)/Math.log(2);
+        let linearPos = ((octaveNumber-middlePitch) / numOctavesInLine * (this.width) );
+        //return vecAdd([linearPos, rOffset], this.centerPos);
+
     }
 
     onmousemove(){
@@ -83,6 +87,7 @@ class MainSimulation{
         let x = event.x;
         let y = event.y;
         for(var i=0;i<this.objects.length;i++){
+            this.objects[i].onmousedown(x,y);
             if(dist([x,y],this.objects[i].pos) < 27){
                 this.objects[i].clicked = true;
                 this.objects[i].onclick();
@@ -189,6 +194,17 @@ class MainSimulation{
 
         }
     }
+
+
+    mainOctavize(x){
+        while(x >= this.fundamentalFreq*2-1){
+            x /= 2;
+        }
+        while(x < this.fundamentalFreq-1){
+            x *= 2;
+        }
+        return x;
+    }
 }
 
 
@@ -204,6 +220,7 @@ class GameObject{
     onclick(){}
     onmouseup(x,y){}
     onmousemove(x,y){}
+    onmousedown(x,y){}
     onhover(){}
     update(dt){};
 

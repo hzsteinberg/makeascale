@@ -64,7 +64,7 @@ class Note extends GameObject{
 
         if(!this.hasAnnouncedOwnPresence){
              this.hasAnnouncedOwnPresence = true;
-            this.parent.synth.triggerAttackRelease(mainOctavize(this.frequency), 0.05);
+            this.parent.synth.triggerAttackRelease(this.parent.mainOctavize(this.frequency), 0.05);
         }
 
 
@@ -104,11 +104,11 @@ class Note extends GameObject{
         }
     }
     onclick(){
-        this.parent.synth.triggerAttack(mainOctavize(this.frequency));
+        this.parent.synth.triggerAttack(this.parent.mainOctavize(this.frequency));
         this.targetRadius = this.defaultRadius;
     }
     onmouseup(x,y){
-        this.parent.synth.triggerRelease(mainOctavize(this.frequency));
+        this.parent.synth.triggerRelease(this.parent.mainOctavize(this.frequency));
         this.onmousemove(x,y);
     }
 }

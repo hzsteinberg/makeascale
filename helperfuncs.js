@@ -49,13 +49,3 @@ function drawTriangleInDirection(ctx, pos1, pos2){
   ctx.fill();
 
 }
-
-function mainOctavize(x){
-    while(x >= 880){
-        x /= 2;
-    }
-    while(x <= 440){
-        x *= 2;
-    }
-    return x;
-}
