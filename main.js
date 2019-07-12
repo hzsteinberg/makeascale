@@ -20,6 +20,9 @@ class MainSimulation{
             release: 1.2
           }
         }).toMaster()
+
+        this.showEqualTemperamentLines = false;
+        this.numOctavesInEachDirection = 1.6;
     }
 
     start(){
@@ -114,17 +117,33 @@ class MainSimulation{
         this.updateCanvasSize();
        // context.fillRect(0,0,this.width,this.height);
 
-        //draw line
+        //draw circle
         context.beginPath();
         context.strokeStyle = "#222";
         context.lineWidth = 5;
 
         let startFreq = 440;
         context.moveTo(...this.freqToRenderPos(startFreq));
-        for(var freq=startFreq;freq<=440*2.1;freq*=1.001){
+        for(let freq=startFreq;freq<=440*2.1;freq*=1.001){
             context.lineTo(...this.freqToRenderPos(freq));
         }
         context.stroke();
+
+
+        //draw evenly spaced ticks
+        if(this.showEqualTemperamentLines){
+            for(let exponent=0;exponent <= 1; exponent += 1/12){
+
+                context.beginPath();
+                let freq = this.fundamentalFreq * 2**(exponent);
+                
+                context.moveTo(...this.freqToRenderPos(freq,10));
+                context.lineTo(...this.freqToRenderPos(freq,-10));
+
+                context.stroke();
+            }
+        }
+
 
         for(var i=0;i<this.objects.length;i++){
             this.objects[i].draw(context);
@@ -155,17 +174,15 @@ class MainSimulation{
 
         //only make one arrow, since the other one would just point back to yourself
 
-        let numOctavesInEachDirection = 1.5;
-
         if(!isIncreasing){
              this.objects.push(new FadingText(this, clickedFrequency, "* 3/2!", -0.003));
 
-             if(newFrequency < this.fundamentalFreq * (2**numOctavesInEachDirection)){
+             if(newFrequency < this.fundamentalFreq * (2**this.numOctavesInEachDirection)){
                 this.objects.push(new NoteArrow(this, newFrequency, "+", false));
              }
         }else{
              this.objects.push(new FadingText(this, clickedFrequency, "* 2/3!", 0.003));
-             if(newFrequency > this.fundamentalFreq / (2**numOctavesInEachDirection)){
+             if(newFrequency > this.fundamentalFreq / (2**this.numOctavesInEachDirection)){
                  this.objects.push(new NoteArrow(this, newFrequency, "+", true));
              }
 
