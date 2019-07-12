@@ -31,15 +31,31 @@ class Note extends GameObject{
         this.pos = this.parent.freqToRenderPos(this.frequency);
 
 
+
+        
+        //a small line poking out from the circle, so you can see that it's not quite equal temperament
+        if(this.parent.showEqualTemperamentLines){
+            context.beginPath();
+            context.lineWidth = 3;
+            context.strokeStyle = "black"
+            context.moveTo(...this.parent.freqToRenderPos(this.frequency,-80));
+            context.lineTo(...this.parent.freqToRenderPos(this.frequency,80));
+            context.stroke();
+        }
+
+
+        //the white circle
         context.fillStyle = "white";
 
         if(this.clicked)context.fillStyle = "#ffd";
 
         drawCircle(context, this.pos[0],this.pos[1],this.currentRadius);
 
+        //the note frequency text
         context.fillStyle = "black";
         context.font = "16" + "px calibri";
         drawCenteredText(context, formatFreq(this.frequency),  this.pos[0],this.pos[1]);
+
     }
     update(dt){
         //first time update() is called, play self

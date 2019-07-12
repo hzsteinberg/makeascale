@@ -22,7 +22,7 @@ class MainSimulation{
         }).toMaster()
 
         this.showEqualTemperamentLines = false;
-        this.highestAllowedInterval = 1.5**3;
+        this.highestAllowedInterval = 1.5**30;
     }
 
     start(){
@@ -131,14 +131,15 @@ class MainSimulation{
 
 
         //draw evenly spaced ticks
+        context.lineWidth = 7;
         if(this.showEqualTemperamentLines){
             for(let exponent=0;exponent <= 1; exponent += 1/12){
 
                 context.beginPath();
                 let freq = this.fundamentalFreq * 2**(exponent);
                 
-                context.moveTo(...this.freqToRenderPos(freq,10));
-                context.lineTo(...this.freqToRenderPos(freq,-10));
+                context.moveTo(...this.freqToRenderPos(freq,60));
+                context.lineTo(...this.freqToRenderPos(freq,-60));
 
                 context.stroke();
             }

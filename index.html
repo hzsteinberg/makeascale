@@ -7,8 +7,8 @@
 	<style>
 		body {
 		  color: darkgrey;
-		  font-family: Monospace;
-		  font-size: 13px;
+		  font-family: Calibri;
+		  font-size: 20px;
 		  text-align: center;
 
 		  background-color: #ddd;
@@ -24,6 +24,20 @@
 		a {
 		  color: blue;
 		}
+
+        #settings{
+            color: black;
+            position: absolute; 
+            bottom: 75%; 
+            right: 0px;
+            width: 200px;
+            z-index: 2;
+            top: 0%;
+            max-width: 25%;
+            background-color: rgba(255,255,255);
+            padding: 1.5em 3em;
+            border-radius: 0 0 0 200px;
+        }
 	</style>
 
 
@@ -47,5 +61,10 @@
 
 	<div id="container"><canvas id="canvas" style="position: absolute; top: 0px; left: 0px;" />
 	</div>
+
+    <div id="settings">
+        <input type="checkbox" onclick="scale.showEqualTemperamentLines = this.checked">Show equally-spaced equal temperament frequency lines?</input>
+
+    </div>
 </body>
 </html>
