@@ -23,6 +23,8 @@ class MainSimulation{
 
         this.showEqualTemperamentLines = false;
         this.highestAllowedInterval = 1.5**30;
+
+        this.numNotes = 0;
     }
 
     start(){
@@ -193,8 +195,8 @@ class MainSimulation{
              if(newFrequency > this.fundamentalFreq / this.highestAllowedInterval){
                  this.objects.push(new NoteArrow(this, newFrequency, "+", true));
              }
-
         }
+        this.numNotes ++;
     }
 
 

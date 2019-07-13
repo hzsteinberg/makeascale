@@ -49,3 +49,15 @@ function drawTriangleInDirection(ctx, pos1, pos2){
   ctx.fill();
 
 }
+
+function playAllNotesInScale(){
+    freqs = []
+    for(var i=0;i<scale.objects.length;i++){
+      if((scale.objects[i]).constructor === Note){
+        freqs.push(scale.objects[i].frequency);
+      }
+    }
+    freqs.sort();
+    freqs.forEach((freq, i) => scale.synth.triggerAttackRelease(scale.mainOctavize(freq), 0.25, "+" + (i*0.5)))
+
+}
