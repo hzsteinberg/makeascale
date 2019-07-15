@@ -52,6 +52,16 @@ class MainSimulation{
         this.centerPos = [this.width/2, this.height/2];
     }
 
+    freqToAngle(freq){
+
+        let octaveNumber = Math.log(freq)/Math.log(2);
+
+        let referenceOctaveNumber = Math.log(440)/Math.log(2); //orient the angles so that 440 is on the right
+
+        return ((octaveNumber - referenceOctaveNumber) % 1)*Math.PI*2;
+
+    }
+
     freqToRenderPos(freq, rOffset=0){
     
         let r = Math.min(this.width, this.height) / 3;
@@ -59,9 +69,7 @@ class MainSimulation{
 
         let octaveNumber = Math.log(freq)/Math.log(2);
 
-        let referenceOctaveNumber = Math.log(440)/Math.log(2); //orient the angles so that 440 is on the right
-
-        let angle = ((octaveNumber - referenceOctaveNumber) % 1)*Math.PI*2;
+        let angle = this.freqToAngle(freq);
 
         let circlePos = [r*Math.cos(angle), r*Math.sin(angle)];
         return vecAdd(circlePos, this.centerPos);

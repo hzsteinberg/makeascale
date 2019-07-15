@@ -22,7 +22,7 @@ class Note extends GameObject{
         this.creationDelay = 40;
 
         this.clickTimer = 0;
-        this.minStayClickedTime = 10;
+        this.minStayClickedTime = 15;
         this.isPlaying = false;
 
         this.hasAnnouncedOwnPresence = false; //first time update() is called, play your note once
@@ -49,9 +49,14 @@ class Note extends GameObject{
 
 
         //the white circle
-        context.fillStyle = "white";
 
-        if(this.isPlaying)context.fillStyle = "#ffd";
+        //the circle
+        let angle = this.parent.freqToAngle(this.frequency);
+        let hueVal = (angle/Math.PI/2 + 0.5)*360;
+
+        context.fillStyle = "hsl("+hueVal+",100%,90%)";
+
+        if(this.isPlaying)context.fillStyle = context.fillStyle = "hsl("+hueVal+",90%,80%)";
 
         drawCircle(context, this.pos[0],this.pos[1],this.currentRadius);
 

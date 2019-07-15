@@ -10,10 +10,11 @@ class FirstNote extends Note{
 
         this.pos = this.parent.freqToRenderPos(this.frequency);
 
-        //the white circle
-        context.fillStyle = "white";
+        //the circle
+        let angle = this.parent.freqToAngle(this.frequency);
+        let hueVal = (angle/Math.PI/2 + 0.5)*360;
 
-        if(this.clicked)context.fillStyle = "#ffd";
+        context.fillStyle = "hsl("+hueVal+",100%,90%)";//"white";
 
         drawCircle(context, this.pos[0],this.pos[1],this.currentRadius);
 
