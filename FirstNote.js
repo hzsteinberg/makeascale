@@ -14,7 +14,7 @@ class FirstNote extends Note{
         let angle = this.parent.freqToAngle(this.frequency);
         let hueVal = (angle/Math.PI/2 + 0.5)*360;
 
-        context.fillStyle = "hsl("+hueVal+",100%,90%)";//"white";
+        context.fillStyle = "hsl("+hueVal+",100%,90%)";
 
         drawCircle(context, this.pos[0],this.pos[1],this.currentRadius);
 
@@ -23,11 +23,12 @@ class FirstNote extends Note{
         context.font = "16" + "px calibri";
         drawCenteredText(context, formatFreq(this.frequency),  this.pos[0],this.pos[1]);
 
-
+        context.strokeStyle = "black"
+        drawCircleStroke(context, this.pos[0],this.pos[1],this.currentRadius * 2);
 
         context.fillStyle = "rgba(0,0,0,"+((this.currentRadius)/this.defaultRadius)+")";
         context.font = "20" + "px calibri";
-        drawCenteredText(context, "Start scale here?",  ...this.parent.freqToRenderPos(this.frequency, -100));
+        drawCenteredText(context, "Start scale here?",  ...this.parent.freqToRenderPos(this.frequency, -200));
     }
     onmousedown(x,y){
         if(!this.clickedOnce){
@@ -36,7 +37,7 @@ class FirstNote extends Note{
 
             this.parent.fundamentalFreq = this.frequency;
             this.parent.objects = this.parent.objects.concat([
-                 new Note(this.parent, this.frequency),
+                 new Note(this.parent, this.frequency, true),
                  new NoteArrow(this.parent, this.frequency, "+", true),
                  new NoteArrow(this.parent, this.frequency, "+", false)]);
             this.parent.numNotes++;

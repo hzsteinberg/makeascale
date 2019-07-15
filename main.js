@@ -87,7 +87,7 @@ class MainSimulation{
         let y = event.y;
         for(var i=0;i<this.objects.length;i++){
             this.objects[i].onmousemove(x,y);
-            if(dist([x,y],this.objects[i].pos) < 20){
+            if(dist([x,y],this.objects[i].pos) < 30){
                 //hover
                 this.objects[i].onhover();
             }
@@ -100,7 +100,7 @@ class MainSimulation{
         let y = event.y;
         for(var i=0;i<this.objects.length;i++){
             this.objects[i].onmousedown(x,y);
-            if(dist([x,y],this.objects[i].pos) < 27){
+            if(dist([x,y],this.objects[i].pos) < 30){
                 this.objects[i].clicked = true;
                 this.objects[i].onclick();
             }
@@ -112,8 +112,8 @@ class MainSimulation{
         let y = event.y;
 
         for(var i=0;i<this.objects.length;i++){
-           this.objects[i].clicked = false;
            this.objects[i].onmouseup(x,y);
+           this.objects[i].clicked = false;
         }
     }
 

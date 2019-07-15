@@ -7,6 +7,13 @@ function drawCircle(context, x,y,radius){
     context.fill();
 }
 
+function drawCircleStroke(context, x,y,radius){
+    context.beginPath();
+    context.arc(x,y, radius, 0, 2 * Math.PI);
+    context.stroke();
+}
+
+
 function drawCenteredText(context, string, x,y){
 
     context.textAlign = 'center';
@@ -50,9 +57,17 @@ function drawTriangleInDirection(ctx, pos1, pos2){
 
 }
 
-function playAllNotesInScale(){
+
+
+function beginSelectingScaleStart(fundamentalFreq){
+    scale.objects.push(new ScaleStartNoteSelector(scale));
+}
+
+function playAllNotesInScale(fundamentalFreq){
     freqs = []
-    fundamentalFreq = scale.fundamentalFreq;
+    if(fundamentalFreq === undefined){
+        fundamentalFreq = scale.fundamentalFreq;
+    }
 
     //format: [Note, freq]
     for(var i=0;i<scale.objects.length;i++){
@@ -69,6 +84,17 @@ function playAllNotesInScale(){
       }
     }
     freqs.sort((a,b) => a[1]-b[1]); //sort numerically by frequency
+
+    //constrain octave from going too high or too low
+    while(freqs[0][1] > 700){
+        freqs = freqs.map((o) => [o[0],o[1]/2]);
+    }
+
+    while(freqs[0][1] < 100){
+        freqs = freqs.map((o) => [o[0],o[1]*2]);
+    }
+
+    //now play all sounds
     freqs.forEach((data, i) => {
         let freq = data[1];
         let noteObj = data[0];
@@ -78,5 +104,4 @@ function playAllNotesInScale(){
             noteObj.changeColorDueToClick();
         }, delay*1000);
     })
-
 }

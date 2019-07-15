@@ -1,7 +1,7 @@
 
 
 class Note extends GameObject{
-    constructor(parent, freq){
+    constructor(parent, freq, hasHalo=false){
         super();
         this.frequency = freq;
         this.pos = [0,0];
@@ -24,6 +24,8 @@ class Note extends GameObject{
         this.clickTimer = 0;
         this.minStayClickedTime = 15;
         this.isPlaying = false;
+
+        this.hasHalo = hasHalo;
 
         this.hasAnnouncedOwnPresence = false; //first time update() is called, play your note once
     }
@@ -60,6 +62,12 @@ class Note extends GameObject{
 
         drawCircle(context, this.pos[0],this.pos[1],this.currentRadius);
 
+
+        if(this.hasHalo){
+            context.strokeStyle = "white";
+            drawCircleStroke(context, this.pos[0],this.pos[1],this.currentRadius*1.4);
+        }
+
         //the note frequency text
         context.fillStyle = "black";
         context.font = "16" + "px calibri";
@@ -82,6 +90,7 @@ class Note extends GameObject{
             if(this.clickTimer > this.minStayClickedTime && !this.clicked){
                 this.isPlaying = false;
                 this.clickTimer = 0;
+                this.parent.synth.triggerRelease(this.parent.mainOctavize(this.frequency));
             }
         }
 
@@ -114,25 +123,27 @@ class Note extends GameObject{
     }
     onmousemove(x,y){
         if(!this.clicked){
-            if(dist([x,y],this.pos) < 20){
+            if(dist([x,y],this.pos) < 30){
                 this.targetRadius = this.hoverRadius;
             }else{
                 this.targetRadius = this.defaultRadius;
             }
         }
     }
+
     changeColorDueToClick(){
         this.isPlaying = true;
         this.clickTimer = 0;
         this.targetRadius = this.defaultRadius;
-
     }
     onclick(){
-        this.parent.synth.triggerAttack(this.parent.mainOctavize(this.frequency));
+        if(!this.isPlaying){
+            this.parent.synth.triggerAttack(this.parent.mainOctavize(this.frequency));
+        }
         this.changeColorDueToClick();
     }
     onmouseup(x,y){
-        this.parent.synth.triggerRelease(this.parent.mainOctavize(this.frequency));
+        //this.clicked is set to false, which will turn off the note next update();
         this.onmousemove(x,y);
     }
 }
