@@ -37,7 +37,8 @@ class FirstNote extends Note{
             this.parent.objects = this.parent.objects.concat([
                  new Note(this.parent, this.frequency),
                  new NoteArrow(this.parent, this.frequency, "+", true),
-                 new NoteArrow(this.parent, this.frequency, "+", false)])
+                 new NoteArrow(this.parent, this.frequency, "+", false)]);
+            this.parent.numNotes++;
         }
     }
     onclick(){}

@@ -52,12 +52,31 @@ function drawTriangleInDirection(ctx, pos1, pos2){
 
 function playAllNotesInScale(){
     freqs = []
+    fundamentalFreq = scale.fundamentalFreq;
+
+    //format: [Note, freq]
     for(var i=0;i<scale.objects.length;i++){
       if((scale.objects[i]).constructor === Note){
-        freqs.push(scale.objects[i].frequency);
+        
+        let freq = scale.objects[i].frequency;
+        let octavizedFreq = scale.octavize(scale.objects[i].frequency, fundamentalFreq);
+
+        //put in the fundamental freq a second time, at the end of the scale
+        if(freq == fundamentalFreq){
+             freqs.push([scale.objects[i], octavizedFreq*2]);
+        }
+        freqs.push([scale.objects[i], octavizedFreq]);
       }
     }
-    freqs.sort();
-    freqs.forEach((freq, i) => scale.synth.triggerAttackRelease(scale.mainOctavize(freq), 0.25, "+" + (i*0.5)))
+    freqs.sort((a,b) => a[1]-b[1]); //sort numerically by frequency
+    freqs.forEach((data, i) => {
+        let freq = data[1];
+        let noteObj = data[0];
+        let delay = i*0.5
+        scale.synth.triggerAttackRelease(freq, 0.25, "+" + delay)
+        window.setTimeout(function(){
+            noteObj.changeColorDueToClick();
+        }, delay*1000);
+    })
 
 }

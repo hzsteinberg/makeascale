@@ -197,14 +197,25 @@ class MainSimulation{
              }
         }
         this.numNotes ++;
+
+        //show the 'play scale' button once it arises
+        if(this.numNotes > 3){
+            let playScaleBtn = document.getElementById("playScaleBtn");
+            playScaleBtn.style.opacity = 1;
+            playScaleBtn.style.pointerEvents = ''; //cancels out the 'none'
+        }
     }
 
 
     mainOctavize(x){
-        while(x >= this.fundamentalFreq*2-1){
+        return this.octavize(x, this.fundamentalFreq);
+    }
+    octavize(x, fundamentalFreq){
+        //fundamentalFreq is deliberately NOT multiplied by 2 here.
+        while(x >= fundamentalFreq*2-1){
             x /= 2;
         }
-        while(x < this.fundamentalFreq-1){
+        while(x < fundamentalFreq-1){
             x *= 2;
         }
         return x;

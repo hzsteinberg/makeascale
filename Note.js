@@ -21,6 +21,10 @@ class Note extends GameObject{
         this.creationDelayTimer = 0;
         this.creationDelay = 40;
 
+        this.clickTimer = 0;
+        this.minStayClickedTime = 10;
+        this.isPlaying = false;
+
         this.hasAnnouncedOwnPresence = false; //first time update() is called, play your note once
     }
     draw(context){
@@ -47,7 +51,7 @@ class Note extends GameObject{
         //the white circle
         context.fillStyle = "white";
 
-        if(this.clicked)context.fillStyle = "#ffd";
+        if(this.isPlaying)context.fillStyle = "#ffd";
 
         drawCircle(context, this.pos[0],this.pos[1],this.currentRadius);
 
@@ -65,6 +69,15 @@ class Note extends GameObject{
         if(!this.hasAnnouncedOwnPresence){
              this.hasAnnouncedOwnPresence = true;
             this.parent.synth.triggerAttackRelease(this.parent.mainOctavize(this.frequency), 0.05);
+        }
+
+        //update timer so circle stops being yellow after being clicked 
+        if(this.isPlaying){
+            this.clickTimer++;
+            if(this.clickTimer > this.minStayClickedTime && !this.clicked){
+                this.isPlaying = false;
+                this.clickTimer = 0;
+            }
         }
 
 
@@ -103,9 +116,15 @@ class Note extends GameObject{
             }
         }
     }
+    changeColorDueToClick(){
+        this.isPlaying = true;
+        this.clickTimer = 0;
+        this.targetRadius = this.defaultRadius;
+
+    }
     onclick(){
         this.parent.synth.triggerAttack(this.parent.mainOctavize(this.frequency));
-        this.targetRadius = this.defaultRadius;
+        this.changeColorDueToClick();
     }
     onmouseup(x,y){
         this.parent.synth.triggerRelease(this.parent.mainOctavize(this.frequency));
