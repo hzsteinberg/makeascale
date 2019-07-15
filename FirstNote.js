@@ -28,7 +28,11 @@ class FirstNote extends Note{
 
         context.fillStyle = "rgba(0,0,0,"+((this.currentRadius)/this.defaultRadius)+")";
         context.font = "20" + "px calibri";
-        drawCenteredText(context, "Start scale here?",  ...this.parent.freqToRenderPos(this.frequency, -200));
+
+        let textPos = this.parent.freqToRenderPos(this.frequency, -200)
+
+        drawCenteredText(context, "Start scale using this as",  textPos[0], textPos[1]);
+        drawCenteredText(context, "the fundamental frequency?", textPos[0],textPos[1] + 25);
     }
     onmousedown(x,y){
         if(!this.clickedOnce){
