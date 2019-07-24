@@ -51,6 +51,7 @@ class FirstNote extends Note{
     onmousemove(x,y){
         //convert mouse angle to this
 
+        if(this.clickedOnce)return;
 
         if(this.parent.mode == 'radial'){
 
