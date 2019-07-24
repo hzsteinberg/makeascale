@@ -30,6 +30,7 @@ class MainSimulation{
         this.lerpFactor = 0;
         this.targetLerpFactor = 0;
         this.mode = "linear" //or 'radial';
+        this.targetMode = "";
     }
 
     start(){
@@ -140,6 +141,27 @@ class MainSimulation{
         }
     }
 
+    cycleMode(){
+        if(this.mode == "linear"){
+            this.changeModeTo("radial");
+        }else{
+            this.changeModeTo("linear");
+        }
+    }
+
+    changeModeTo(mode){
+        if(this.mode == mode)return;
+
+        this.targetMode = mode;
+
+        if(mode == "linear"){
+            this.mode = "linear";
+            this.targetLerpFactor = 0;
+        }else if(mode == "radial"){
+            this.targetLerpFactor = 1;
+        }
+    }
+
     update(){
         let context = this.context;
         const t = Date.now() / 1000;
@@ -178,9 +200,10 @@ class MainSimulation{
 
         
         if(this.mode == 'radial'){
+            //render one circle
             let startFreq = 440;
             context.moveTo(...this.freqToRenderPos(startFreq));
-            for(let freq=startFreq;freq<=440*2.1;freq*=1.001){
+            for(let freq=startFreq;freq<=440*2.1 * 4;freq*=1.001){
                 context.lineTo(...this.freqToRenderPos(freq));
             }
             context.stroke();
@@ -188,7 +211,7 @@ class MainSimulation{
             let startFreq = 440/2;
             let numOctaves = 3;
             context.moveTo(...this.freqToRenderPos(startFreq));
-            for(let freq=startFreq;freq<=440*4.1;freq*=1.001){
+            for(let freq=startFreq/(2**numOctaves);freq<=startFreq*2.1*(2**numOctaves);freq*=1.001){
                 context.lineTo(...this.freqToRenderPos(freq));
             }
             context.stroke();

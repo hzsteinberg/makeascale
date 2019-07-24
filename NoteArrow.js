@@ -53,27 +53,79 @@ class NoteArrow extends GameObject{
         return direction;
     }
 
+    calcArrowPos(frequency){
+        //draw note arrow
+        let centerNotePos = this.parent.freqToRenderPos(frequency, 40);
+        let direction = this.calcTangentDirection(frequency);
+
+        //place triangle slightly away from center point
+        return vecAdd(centerNotePos, vecScale(direction,this.noteDistance));
+    }
+
     draw(context){
         if(this.creationDelayTimer < this.creationDelay)return;
 
-        let pos = this.parent.freqToRenderPos(this.frequency, 40);
+        //draw note arrow
+        let centerNotePos = this.parent.freqToRenderPos(this.frequency, 40);
         let direction = this.calcTangentDirection(this.frequency);
 
         //place triangle slightly away from center point
-        this.pos = vecAdd(pos, vecScale(direction,this.noteDistance));
+        this.pos = this.calcArrowPos(this.frequency);
 
         //draw triangle further out in the proper direction
         this.drawTriangleAtFreq(context, this.pos, vecAdd(this.pos,vecScale(direction,this.size)));
 
         //draw a small white circle so it looks a bit more even
         context.fillStyle = "white";
-        drawCircle(context, pos[0],pos[1],this.size/3);
+        drawCircle(context, centerNotePos[0],centerNotePos[1],this.size/3);
+
+        //if linear, draw echoes at other octaves
+        if(this.parent.mode == 'linear'){
+            const numOctaveEchoes = 2;
+            for(var i=-numOctaveEchoes; i<numOctaveEchoes;i++){
+                if(i==0)continue
+                    let echoFrequency = this.frequency * (2**i);
+
+                    let centerNotePos = this.parent.freqToRenderPos(echoFrequency, 40);
+                    let direction = this.calcTangentDirection(echoFrequency);
+
+                    //place triangle slightly away from center point
+                    let arrowPos = this.calcArrowPos(echoFrequency);
+
+                    //draw triangle further out in the proper direction
+                    this.drawTriangleAtFreq(context, arrowPos, vecAdd(arrowPos,vecScale(direction,this.size)));
+
+                    //draw a small white circle so it looks a bit more even
+                    context.fillStyle = "white";
+                    drawCircle(context, centerNotePos[0],centerNotePos[1],this.size/3);
+    
+            }
+        }
+
     }
-    onclick(){
+    onmousedown(x,y){
         if(!this.clickedOnce){
-            this.clickedOnce = true;
-            this.parent.makeANewTone(this.frequency, this.isFacingRight);
-            this.deleteSelf();
+
+            if(this.parent.mode == 'linear'){
+                const numOctaveEchoes = 2;
+                for(var i=-numOctaveEchoes; i<numOctaveEchoes;i++){
+                      let echoFreq = this.frequency * (2**i);
+                      let pos = this.calcArrowPos(echoFreq);
+                      if(dist([x,y],pos) < 30){
+                            this.clickedOnce = true;
+                            this.parent.makeANewTone(echoFreq, this.isFacingRight);
+                            this.deleteSelf();
+                            return;
+                      }
+                }
+            }else{
+                //non-linear mode
+                if(dist([x,y],this.pos) < 30){
+                    this.clickedOnce = true;
+                    this.parent.makeANewTone(this.frequency, this.isFacingRight);
+                    this.deleteSelf();
+                }
+            }
         }
     }
     update(dt){

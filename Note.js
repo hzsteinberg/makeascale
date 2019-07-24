@@ -30,12 +30,14 @@ class Note extends GameObject{
         this.hasAnnouncedOwnPresence = false; //first time update() is called, play your note once
     }
 
-    drawNoteCircle(context, pos, frequency){
+    drawNoteCircle(context, pos, frequency, isEcho=false){
         let angle = this.parent.freqToAngle(frequency)// - this.parent.freqToAngle(440);
         let hueVal = ((angle/Math.PI/2 + 0.5)*360 + 180)%360;
 
-        let noteColor = "hsl("+hueVal+",100%,90%)";
-        if(this.isPlaying)noteColor = "hsl("+hueVal+",90%,80%)";
+        let opacity = isEcho ? 0.5: 1.0;
+
+        let noteColor = "hsla("+hueVal+",100%,90%, "+opacity+")";
+        if(this.isPlaying)noteColor = "hsla("+hueVal+",90%,80%,"+opacity+")";
         context.fillStyle = noteColor;
 
         //a small line poking out from the circle, so you can see that it's not quite equal temperament
@@ -76,13 +78,14 @@ class Note extends GameObject{
             const numOctaveEchoes = 2;
             for(var i=-numOctaveEchoes; i<numOctaveEchoes;i++){
                 if(i==0)continue
-    
-                    let pos = this.parent.freqToRenderPos(this.frequency * (2**i));
 
-                    this.drawNoteCircle(context, pos, this.frequency);
+                    let newFreq = this.frequency * (2**i);
+    
+                    let pos = this.parent.freqToRenderPos(newFreq);
+
+                    this.drawNoteCircle(context, pos, newFreq, true);
     
             }
-
         }
 
     }
@@ -135,7 +138,26 @@ class Note extends GameObject{
     }
     onmousemove(x,y){
         if(!this.clicked){
+            let isHovered = false;
+
+            //test center for hovering
             if(dist([x,y],this.pos) < 30){
+                isHovered = true;
+            }
+
+            //test echoes if there are any
+            if(this.parent.mode == 'linear'){
+                const numOctaveEchoes = 2;
+                for(var i=-numOctaveEchoes; i<numOctaveEchoes;i++){
+                    let echoFreq = this.frequency * (2**i);
+                    let pos = this.parent.freqToRenderPos(echoFreq);
+
+                    if(dist([x,y],pos) < 30){
+                        isHovered = true;
+                    }
+                }
+            }
+            if(isHovered){
                 this.targetRadius = this.hoverRadius;
             }else{
                 this.targetRadius = this.defaultRadius;
@@ -148,11 +170,26 @@ class Note extends GameObject{
         this.clickTimer = 0;
         this.targetRadius = this.defaultRadius;
     }
-    onclick(){
+    beginToPlay(){
         if(!this.isPlaying){
             this.parent.synth.triggerAttack(this.parent.mainOctavize(this.frequency));
         }
         this.changeColorDueToClick();
+    }
+    onmousedown(x,y){
+        //test this and echoes for clicking.
+        if(this.parent.mode == 'linear'){
+            const numOctaveEchoes = 2;
+            for(var i=-numOctaveEchoes; i<numOctaveEchoes;i++){
+                  let echoFreq = this.frequency * (2**i);
+                  let pos = this.parent.freqToRenderPos(echoFreq);
+                  if(dist([x,y],pos) < 30){
+                        this.clicked = true;
+                        this.beginToPlay();
+                        return;
+                  }
+            }
+        }
     }
     onmouseup(x,y){
         //this.clicked is set to false, which will turn off the note next update();

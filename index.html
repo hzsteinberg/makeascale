@@ -41,19 +41,25 @@
             padding: 1.5em 3em 0.5em;
             border-radius: 0 0 0 200px;
         }
-        #playScaleBtn{
+        .btn{
             display: flex;
             align-items: center;
-            bottom: 10%; 
-            right: 5%;
             border-radius: 50px;
             padding: 1em;
             transition: opacity 0.5s;
         }
-        #playScaleBtn:hover{
+        #playScaleBtn{
+            bottom: 10%; 
+            right: 5%;
+        }
+        #displayModeBtn{
+            bottom: 10%; 
+            left: 5%;
+        }
+        .btn:hover{
             transform: scale(1.03);
         }
-        #playScaleBtn:click{
+        .btn:click{
             background-color: #ffd;
         }
 	</style>
@@ -86,6 +92,9 @@
         <input type="checkbox" onclick="scale.showEqualTemperamentLines = this.checked">Show equally-spaced equal temperament frequency lines?</input>
     </div>
 
-    <div id="playScaleBtn" class="overlay" style="opacity: 0; pointer-events: none" onclick="beginSelectingScaleStart()"><span>Play all pitches in your scale</span></div>
+    <div id="playScaleBtn" class="overlay btn" style="opacity: 0; pointer-events: none" onclick="beginSelectingScaleStart()"><span>Play all pitches in your scale</span></div>
+
+
+    <div id="displayModeBtn" class="overlay btn" onclick="scale.cycleMode()"><span>Change display</span></div>
 </body>
 </html>
