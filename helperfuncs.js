@@ -26,6 +26,11 @@ function vecAdd(a,b){
  return [a[0]+b[0],a[1]+b[1]];
 }
 
+function lerp(a,b,t){
+ return [a[0]*(1-t)+b[0]*(t),a[1]*(1-t)+b[1]*(t)];
+}
+
+
 function dist(a,b){
     let x = a[0]-b[0]
     let y = a[1]-b[1]

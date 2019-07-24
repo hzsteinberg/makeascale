@@ -25,6 +25,11 @@ class MainSimulation{
         this.highestAllowedInterval = 1.5**30;
 
         this.numNotes = 0;
+
+        // used to transition between linear frequency scale and radial frequency scale
+        this.lerpFactor = 0;
+        this.targetLerpFactor = 0;
+        this.mode = "linear" //or 'radial';
     }
 
     start(){
@@ -62,7 +67,7 @@ class MainSimulation{
 
     }
 
-    freqToRenderPos(freq, rOffset=0){
+    radialFreqToRenderPos(freq, rOffset = 0){
     
         let r = Math.min(this.width, this.height) / 3;
         r += rOffset;
@@ -71,14 +76,32 @@ class MainSimulation{
 
         let angle = this.freqToAngle(freq);
 
-        let circlePos = [r*Math.cos(angle), r*Math.sin(angle)];
-        return vecAdd(circlePos, this.centerPos);
+        return [r*Math.cos(angle), r*Math.sin(angle)];
+
+    }
+    linearFreqToRenderPos(freq, rOffset = 0){
 
         //on a line instead of a circle. currently broken
         let numOctavesInLine = 2;
+        let octaveNumber = Math.log(freq)/Math.log(2);
         let middlePitch = Math.log(this.fundamentalFreq)/Math.log(2);
         let linearPos = ((octaveNumber-middlePitch) / numOctavesInLine * (this.width) );
-        //return vecAdd([linearPos, rOffset], this.centerPos);
+        return [linearPos, rOffset];
+
+    }
+
+    freqToRenderPos(freq, rOffset=0){
+        let linearPos = this.linearFreqToRenderPos(freq, rOffset);
+        let radialPos = this.radialFreqToRenderPos(freq, rOffset);
+
+       // return vecAdd(linearPos, this.centerPos);
+        //return vecAdd(radialPos, this.centerPos);
+
+        //animate transformations more smoothly
+        let cosineInterpolationFactor = 0.5*(Math.cos((this.lerpFactor+1)*Math.PI)+1);
+
+        let combinedPos = lerp(linearPos, radialPos, cosineInterpolationFactor);
+        return vecAdd(combinedPos, this.centerPos);
 
     }
 
@@ -124,6 +147,19 @@ class MainSimulation{
         this.last_t = t;
 
 
+        if(Math.abs(this.lerpFactor - this.targetLerpFactor) > 0.01){
+            this.lerpFactor += 1 * Math.sign(this.targetLerpFactor-this.lerpFactor) * dt;
+
+        }else{
+            this.lerpFactor = this.targetLerpFactor;
+            if(this.targetLerpFactor == 1){
+                this.mode = "radial"
+            }else{
+                this.mode = "linear";
+            }
+        }
+
+
         for(var i=0;i<this.objects.length;i++){
             this.objects[i].update(1);
         }
@@ -139,16 +175,28 @@ class MainSimulation{
         context.strokeStyle = "#222";
         context.lineWidth = 5;
 
-        let startFreq = 440;
-        context.moveTo(...this.freqToRenderPos(startFreq));
-        for(let freq=startFreq;freq<=440*2.1;freq*=1.001){
-            context.lineTo(...this.freqToRenderPos(freq));
+
+        
+        if(this.mode == 'radial'){
+            let startFreq = 440;
+            context.moveTo(...this.freqToRenderPos(startFreq));
+            for(let freq=startFreq;freq<=440*2.1;freq*=1.001){
+                context.lineTo(...this.freqToRenderPos(freq));
+            }
+            context.stroke();
+        }else{
+            let startFreq = 440/2;
+            let numOctaves = 3;
+            context.moveTo(...this.freqToRenderPos(startFreq));
+            for(let freq=startFreq;freq<=440*4.1;freq*=1.001){
+                context.lineTo(...this.freqToRenderPos(freq));
+            }
+            context.stroke();
         }
-        context.stroke();
 
 
-        //draw evenly spaced ticks
-        context.lineWidth = 7;
+        //draw evenly spaced equal temperament ticks
+        context.lineWidth = 3;
         if(this.showEqualTemperamentLines){
             for(let exponent=0;exponent <= 1; exponent += 1/12){
 

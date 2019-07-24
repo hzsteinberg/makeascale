@@ -12,7 +12,7 @@ class FirstNote extends Note{
 
         //the circle
         let angle = this.parent.freqToAngle(this.frequency);
-        let hueVal = (angle/Math.PI/2 + 0.5)*360;
+        let hueVal = ((angle/Math.PI/2 + 0.5)*360 + 180+35)%360;
 
         context.fillStyle = "hsl("+hueVal+",100%,90%)";
 
@@ -51,10 +51,21 @@ class FirstNote extends Note{
     onmousemove(x,y){
         //convert mouse angle to this
 
-        let angle = Math.atan2(y-this.parent.centerPos[1],x-this.parent.centerPos[0]);
-       
-        let exponent = (angle) / Math.PI /2 //now from -0.5 to 0.5
 
-        this.frequency = 440 * 2**(exponent);
+        if(this.parent.mode == 'radial'){
+
+            let angle = Math.atan2(y-this.parent.centerPos[1],x-this.parent.centerPos[0]);
+           
+            let exponent = (angle) / Math.PI /2 //now from -0.5 to 0.5
+
+            this.frequency = 440 * 2**(exponent);
+        }else{
+
+
+            let xPos = x/this.parent.width;
+            let exponent = xPos * 2;
+
+            this.frequency = 440 * 2**(exponent);
+        }
     }
 }

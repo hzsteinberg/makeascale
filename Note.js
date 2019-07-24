@@ -29,49 +29,61 @@ class Note extends GameObject{
 
         this.hasAnnouncedOwnPresence = false; //first time update() is called, play your note once
     }
-    draw(context){
 
-        if(!this.hasAnnouncedOwnPresence)return;
+    drawNoteCircle(context, pos, frequency){
+        let angle = this.parent.freqToAngle(frequency)// - this.parent.freqToAngle(440);
+        let hueVal = ((angle/Math.PI/2 + 0.5)*360 + 180)%360;
 
+        let noteColor = "hsl("+hueVal+",100%,90%)";
+        if(this.isPlaying)noteColor = "hsl("+hueVal+",90%,80%)";
+        context.fillStyle = noteColor;
 
-        this.pos = this.parent.freqToRenderPos(this.frequency);
-
-
-
-        
         //a small line poking out from the circle, so you can see that it's not quite equal temperament
         if(this.parent.showEqualTemperamentLines){
             context.beginPath();
-            context.lineWidth = 3;
-            context.strokeStyle = "black"
-            context.moveTo(...this.parent.freqToRenderPos(this.frequency,-80));
-            context.lineTo(...this.parent.freqToRenderPos(this.frequency,80));
+            context.lineWidth = 4;
+            context.strokeStyle = noteColor;
+            context.moveTo(...this.parent.freqToRenderPos(frequency,-80));
+            context.lineTo(...this.parent.freqToRenderPos(frequency,80));
             context.stroke();
         }
 
-
-        //the white circle
-
-        //the circle
-        let angle = this.parent.freqToAngle(this.frequency);
-        let hueVal = (angle/Math.PI/2 + 0.5)*360;
-
-        context.fillStyle = "hsl("+hueVal+",100%,90%)";
-
-        if(this.isPlaying)context.fillStyle = context.fillStyle = "hsl("+hueVal+",90%,80%)";
-
-        drawCircle(context, this.pos[0],this.pos[1],this.currentRadius);
-
+        drawCircle(context, pos[0],pos[1],this.currentRadius);
 
         if(this.hasHalo){
             context.strokeStyle = "white";
-            drawCircleStroke(context, this.pos[0],this.pos[1],this.currentRadius*1.4);
+            drawCircleStroke(context, pos[0],pos[1],this.currentRadius*1.4);
         }
 
         //the note frequency text
         context.fillStyle = "black";
         context.font = "16" + "px calibri";
-        drawCenteredText(context, formatFreq(this.frequency),  this.pos[0],this.pos[1]);
+        drawCenteredText(context, formatFreq(frequency),  pos[0],pos[1]);
+
+    }
+
+    draw(context){
+
+        if(!this.hasAnnouncedOwnPresence)return;
+
+        this.pos = this.parent.freqToRenderPos(this.frequency);
+
+        //the circle
+        this.drawNoteCircle(context, this.pos, this.frequency);
+
+        //if linear, draw echoes at other octaves
+        if(this.parent.mode == 'linear'){
+            const numOctaveEchoes = 2;
+            for(var i=-numOctaveEchoes; i<numOctaveEchoes;i++){
+                if(i==0)continue
+    
+                    let pos = this.parent.freqToRenderPos(this.frequency * (2**i));
+
+                    this.drawNoteCircle(context, pos, this.frequency);
+    
+            }
+
+        }
 
     }
     update(dt){
