@@ -25,6 +25,9 @@ function drawCenteredText(context, string, x,y){
 function vecAdd(a,b){
  return [a[0]+b[0],a[1]+b[1]];
 }
+function vecScale(a,t){
+ return [a[0]*t,a[1]*t];
+}
 
 function lerp(a,b,t){
  return [a[0]*(1-t)+b[0]*(t),a[1]*(1-t)+b[1]*(t)];

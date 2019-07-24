@@ -222,12 +222,11 @@ class MainSimulation{
 
         let ratio = 1.5;
 
-        let newFrequency = clickedFrequency * ratio;
+        let newFrequency = clickedFrequency / ratio;
         let midpointFrequency = clickedFrequency / Math.pow(ratio,1/3);
         if(isIncreasing){
-            newFrequency = clickedFrequency / ratio;
-             midpointFrequency = clickedFrequency * Math.pow(ratio, 1/3);
-            
+            newFrequency = clickedFrequency * ratio;
+            midpointFrequency = clickedFrequency * Math.pow(ratio, 1/3);
         }
 
 
@@ -241,13 +240,13 @@ class MainSimulation{
         //only make one arrow, since the other one would just point back to yourself
 
         if(!isIncreasing){
-             this.objects.push(new FadingText(this, clickedFrequency, "* 3/2!", -0.003));
+             this.objects.push(new FadingText(this, clickedFrequency, "* 2/3!", -0.006));
 
              if(newFrequency < this.fundamentalFreq * this.highestAllowedInterval){
                 this.objects.push(new NoteArrow(this, newFrequency, "+", false));
              }
         }else{
-             this.objects.push(new FadingText(this, clickedFrequency, "* 2/3!", 0.003));
+             this.objects.push(new FadingText(this, clickedFrequency, "* 3/2!", 0.006));
              if(newFrequency > this.fundamentalFreq / this.highestAllowedInterval){
                  this.objects.push(new NoteArrow(this, newFrequency, "+", true));
              }
