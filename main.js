@@ -210,7 +210,7 @@ class MainSimulation{
         }else{
             let startFreq = 440/2;
             let numOctaves = 3;
-            context.moveTo(...this.freqToRenderPos(startFreq));
+            context.moveTo(...this.freqToRenderPos(startFreq/(2**numOctaves)));
             for(let freq=startFreq/(2**numOctaves);freq<=startFreq*2.1*(2**numOctaves);freq*=1.001){
                 context.lineTo(...this.freqToRenderPos(freq));
             }
@@ -221,7 +221,7 @@ class MainSimulation{
         //draw evenly spaced equal temperament ticks
         context.lineWidth = 3;
         if(this.showEqualTemperamentLines){
-            for(let exponent=0;exponent <= 1; exponent += 1/12){
+            for(let exponent=-3;exponent <= 3; exponent += 1/12){
 
                 context.beginPath();
                 let freq = this.fundamentalFreq * 2**(exponent);
