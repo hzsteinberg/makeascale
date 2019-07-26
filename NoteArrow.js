@@ -80,7 +80,7 @@ class NoteArrow extends GameObject{
         drawCircle(context, centerNotePos[0],centerNotePos[1],this.size/3);
 
         //if linear, draw echoes at other octaves
-        if(this.parent.mode == 'linear'){
+        if(this.parent.currentMode == 'linear'){
             const numOctaveEchoes = 2;
             for(var i=-numOctaveEchoes; i<numOctaveEchoes;i++){
                 if(i==0)continue
@@ -106,14 +106,14 @@ class NoteArrow extends GameObject{
     onmousedown(x,y){
         if(!this.clickedOnce){
 
-            if(this.parent.mode == 'linear'){
+            if(this.parent.currentMode == 'linear'){
                 const numOctaveEchoes = 2;
                 for(var i=-numOctaveEchoes; i<numOctaveEchoes;i++){
                       let echoFreq = this.frequency * (2**i);
                       let pos = this.calcArrowPos(echoFreq);
                       if(dist([x,y],pos) < 30){
                             this.clickedOnce = true;
-                            this.parent.makeANewTone(echoFreq, this.isFacingRight);
+                            this.parent.makeANewTone(this.frequency, this.isFacingRight, echoFreq);
                             this.deleteSelf();
                             return;
                       }

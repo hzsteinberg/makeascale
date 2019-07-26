@@ -15,6 +15,8 @@ class Note extends GameObject{
         this.targetRadius = this.defaultRadius;
 
 
+        this.currentPlayingFrequency = this.frequency;
+
         this.currentRadius = 0;
         this.radiusSpeed = 3;
 
@@ -74,7 +76,7 @@ class Note extends GameObject{
         this.drawNoteCircle(context, this.pos, this.frequency);
 
         //if linear, draw echoes at other octaves
-        if(this.parent.mode == 'linear'){
+        if(this.parent.currentMode == 'linear'){
             const numOctaveEchoes = 2;
             for(var i=-numOctaveEchoes; i<numOctaveEchoes;i++){
                 if(i==0)continue
@@ -96,7 +98,9 @@ class Note extends GameObject{
 
         if(!this.hasAnnouncedOwnPresence){
              this.hasAnnouncedOwnPresence = true;
-            this.parent.synth.triggerAttackRelease(this.parent.mainOctavize(this.frequency), 0.05);
+            
+            this.currentPlayingFrequency = this.parent.mainOctavize(this.frequency);
+            this.parent.synth.triggerAttackRelease(this.currentPlayingFrequency, 0.05);
         }
 
         //update timer so circle stops being yellow after being clicked 
@@ -105,7 +109,8 @@ class Note extends GameObject{
             if(this.clickTimer > this.minStayClickedTime && !this.clicked){
                 this.isPlaying = false;
                 this.clickTimer = 0;
-                this.parent.synth.triggerRelease(this.parent.mainOctavize(this.frequency));
+                this.parent.synth.triggerRelease(this.currentPlayingFrequency);
+                this.currentPlayingFrequency = 0;
             }
         }
 
@@ -146,7 +151,7 @@ class Note extends GameObject{
             }
 
             //test echoes if there are any
-            if(this.parent.mode == 'linear'){
+            if(this.parent.currentMode == 'linear' || this.parent.targetMode == "linear"){
                 const numOctaveEchoes = 2;
                 for(var i=-numOctaveEchoes; i<numOctaveEchoes;i++){
                     let echoFreq = this.frequency * (2**i);
@@ -170,26 +175,39 @@ class Note extends GameObject{
         this.clickTimer = 0;
         this.targetRadius = this.defaultRadius;
     }
-    beginToPlay(){
+
+    beginToPlay(freq){
+
+        if(freq === undefined){
+            freq = this.parent.mainOctavize(this.frequency);
+        }
+
         if(!this.isPlaying){
-            this.parent.synth.triggerAttack(this.parent.mainOctavize(this.frequency));
+            this.parent.synth.triggerAttack(freq);
+            this.currentPlayingFrequency = freq;
         }
         this.changeColorDueToClick();
     }
     onmousedown(x,y){
-        //test this and echoes for clicking.
-        if(this.parent.mode == 'linear'){
-            const numOctaveEchoes = 2;
-            for(var i=-numOctaveEchoes; i<numOctaveEchoes;i++){
-                  let echoFreq = this.frequency * (2**i);
-                  let pos = this.parent.freqToRenderPos(echoFreq);
-                  if(dist([x,y],pos) < 30){
-                        this.clicked = true;
-                        this.beginToPlay();
-                        return;
-                  }
-            }
-        }
+      //test this and echoes for clicking.
+      if(this.parent.currentMode == 'linear'){
+          const numOctaveEchoes = 2;
+          for(var i=-numOctaveEchoes; i<numOctaveEchoes;i++){
+                let echoFreq = this.frequency * (2**i);
+                let pos = this.parent.freqToRenderPos(echoFreq);
+                if(dist([x,y],pos) < 30){
+                      this.clicked = true;
+                      this.beginToPlay(echoFreq);
+                      return;
+                }
+          }
+      }
+      //make sure you can be clicked in other modes too
+      if(dist([x,y],this.pos) < 30){
+            this.clicked = true;
+            this.beginToPlay();
+            return;
+      }
     }
     onmouseup(x,y){
         //this.clicked is set to false, which will turn off the note next update();

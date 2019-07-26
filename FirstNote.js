@@ -3,11 +3,9 @@
 class FirstNote extends Note{
     constructor(parent){
         super(parent, 440);
+         this.hasAnnouncedOwnPresence = true;
     }
     draw(context){
-        if(!this.hasAnnouncedOwnPresence)return;
-
-
         this.pos = this.parent.freqToRenderPos(this.frequency);
 
         //the circle
@@ -53,7 +51,12 @@ class FirstNote extends Note{
 
         if(this.clickedOnce)return;
 
-        if(this.parent.mode == 'radial'){
+        if(this.parent.currentMode == "linear"){
+            let xPos = x/this.parent.width;
+            let exponent = xPos * 2;
+
+            this.frequency = 440 * 2**(exponent);
+        }else if(this.parent.currentMode == "radial"){
 
             let angle = Math.atan2(y-this.parent.centerPos[1],x-this.parent.centerPos[0]);
            
@@ -61,12 +64,6 @@ class FirstNote extends Note{
 
             this.frequency = 440 * 2**(exponent);
         }else{
-
-
-            let xPos = x/this.parent.width;
-            let exponent = xPos * 2;
-
-            this.frequency = 440 * 2**(exponent);
         }
     }
 }

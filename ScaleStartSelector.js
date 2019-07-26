@@ -88,6 +88,7 @@ class MultiNoteSelector extends Note{
         this.mouseAngle = 0;
 
         this.selectedNotes = [];
+        this.calcSelectedNote();
     }
     draw(context){
         if(!this.hasAnnouncedOwnPresence)return;
@@ -115,7 +116,7 @@ class MultiNoteSelector extends Note{
     }
     onclick(){}
 
-    calcSelectedNote(){
+    calcSelectedNoteRadially(){
         let angles = [];
         let minAngle = 999;
         let selectedIndex = 0;
@@ -149,7 +150,11 @@ class MultiNoteSelector extends Note{
     }
     onmousedown(x,y){
         //convert mouse angle to this
-        this.mouseAngle = Math.atan2(y-this.parent.centerPos[1],x-this.parent.centerPos[0]);
-        this.calcSelectedNote();
+       if(this.parent.currentMode == "radial"){
+            this.mouseAngle = Math.atan2(y-this.parent.centerPos[1],x-this.parent.centerPos[0]);
+            this.calcSelectedNote();
+        }else{
+            //need to calculate...
+        }
     }
 }

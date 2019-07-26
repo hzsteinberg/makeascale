@@ -29,8 +29,8 @@ class MainSimulation{
         // used to transition between linear frequency scale and radial frequency scale
         this.lerpFactor = 0;
         this.targetLerpFactor = 0;
-        this.mode = "linear" //or 'radial';
-        this.targetMode = "";
+        this.targetMode = "linear";
+        this.currentMode = "linear";
     }
 
     start(){
@@ -68,6 +68,15 @@ class MainSimulation{
 
     }
 
+    fifthsFreqToAngle(freq){
+
+        let octaveNumber = Math.log(freq)/Math.log(2);
+        let referenceOctaveNumber = Math.log(440)/Math.log(2); //orient the angles so that 440 is on the right
+
+        return ((octaveNumber - referenceOctaveNumber)/(7/12) * (Math.PI/6)) % (Math.PI*2);
+
+    }
+
     radialFreqToRenderPos(freq, rOffset = 0){
     
         let r = Math.min(this.width, this.height) / 3;
@@ -76,6 +85,20 @@ class MainSimulation{
         let octaveNumber = Math.log(freq)/Math.log(2);
 
         let angle = this.freqToAngle(freq);
+
+        return [r*Math.cos(angle), r*Math.sin(angle)];
+
+    }
+
+
+    fifthsFreqToRenderPos(freq, rOffset = 0){
+    
+        let r = Math.min(this.width, this.height) / 3;
+        r += rOffset;
+
+        let octaveNumber = Math.log(freq)/Math.log(2);
+
+        let angle = this.fifthsFreqToAngle(freq);
 
         return [r*Math.cos(angle), r*Math.sin(angle)];
 
@@ -94,14 +117,17 @@ class MainSimulation{
     freqToRenderPos(freq, rOffset=0){
         let linearPos = this.linearFreqToRenderPos(freq, rOffset);
         let radialPos = this.radialFreqToRenderPos(freq, rOffset);
+        let fifthsPos = this.fifthsFreqToRenderPos(freq, rOffset);
 
-       // return vecAdd(linearPos, this.centerPos);
-        //return vecAdd(radialPos, this.centerPos);
+        let positions = {"linear": linearPos, "radial": radialPos, "fifths": fifthsPos};
+
+        
+        let pos1 = positions[this.currentMode], pos2 = positions[this.targetMode];
 
         //animate transformations more smoothly
         let cosineInterpolationFactor = 0.5*(Math.cos((this.lerpFactor+1)*Math.PI)+1);
 
-        let combinedPos = lerp(linearPos, radialPos, cosineInterpolationFactor);
+        let combinedPos = lerp(pos1, pos2, cosineInterpolationFactor);
         return vecAdd(combinedPos, this.centerPos);
 
     }
@@ -142,24 +168,28 @@ class MainSimulation{
     }
 
     cycleMode(){
-        if(this.mode == "linear"){
+        if(this.currentMode == "linear"){
             this.changeModeTo("radial");
+            document.getElementById("displayModeBtn").innerHTML = "View: Octave";
+        }else if(this.currentMode == "radial"){
+            this.changeModeTo("fifths");
+            document.getElementById("displayModeBtn").innerHTML = "View: Circle of Fifths";
         }else{
             this.changeModeTo("linear");
+            document.getElementById("displayModeBtn").innerHTML = "View: Frequency";
         }
     }
 
     changeModeTo(mode){
-        if(this.mode == mode)return;
+        if(this.currentMode == mode)return;
 
         this.targetMode = mode;
 
-        if(mode == "linear"){
-            this.mode = "linear";
-            this.targetLerpFactor = 0;
-        }else if(mode == "radial"){
-            this.targetLerpFactor = 1;
+        if(this.lerpFactor == 1){
+            // don't interrupt an existing animation
+            this.lerpFactor = 0;
         }
+        this.targetLerpFactor = 1;
     }
 
     update(){
@@ -173,12 +203,8 @@ class MainSimulation{
             this.lerpFactor += 1 * Math.sign(this.targetLerpFactor-this.lerpFactor) * dt;
 
         }else{
-            this.lerpFactor = this.targetLerpFactor;
-            if(this.targetLerpFactor == 1){
-                this.mode = "radial"
-            }else{
-                this.mode = "linear";
-            }
+            this.lerpFactor = this.targetLerpFactor; 
+            this.currentMode = this.targetMode;
         }
 
 
@@ -199,23 +225,21 @@ class MainSimulation{
 
 
         
-        if(this.mode == 'radial'){
-            //render one circle
-            let startFreq = 440;
-            context.moveTo(...this.freqToRenderPos(startFreq));
-            for(let freq=startFreq;freq<=440*2.1 * 4;freq*=1.001){
-                context.lineTo(...this.freqToRenderPos(freq));
-            }
-            context.stroke();
-        }else{
-            let startFreq = 440/2;
-            let numOctaves = 3;
-            context.moveTo(...this.freqToRenderPos(startFreq/(2**numOctaves)));
-            for(let freq=startFreq/(2**numOctaves);freq<=startFreq*2.1*(2**numOctaves);freq*=1.001){
-                context.lineTo(...this.freqToRenderPos(freq));
-            }
-            context.stroke();
+        let numOctavesToDraw = 1;
+        if(this.currentMode == 'linear'){
+            numOctavesToDraw = 3;
         }
+        if(this.currentMode == 'fifths' || this.targetMode == 'fifths'){
+            numOctavesToDraw = 6;
+        }
+
+
+        let startFreq = 440/2;
+        context.moveTo(...this.freqToRenderPos(startFreq/(2**numOctavesToDraw)));
+        for(let freq=startFreq/(2**numOctavesToDraw);freq<=startFreq*2.1*(2**numOctavesToDraw);freq*=1.001){
+            context.lineTo(...this.freqToRenderPos(freq));
+        }
+        context.stroke();
 
 
         //draw evenly spaced equal temperament ticks
@@ -239,7 +263,11 @@ class MainSimulation{
         }
         window.requestAnimationFrame(this.update.bind(this));
     }
-    makeANewTone(clickedFrequency, isIncreasing){
+    makeANewTone(clickedFrequency, isIncreasing, displayTextAtFrequency){
+
+        if(displayTextAtFrequency === undefined){
+            displayTextAtFrequency = clickedFrequency;
+        }
 
         //disappear and add a new tone
 
@@ -263,13 +291,13 @@ class MainSimulation{
         //only make one arrow, since the other one would just point back to yourself
 
         if(!isIncreasing){
-             this.objects.push(new FadingText(this, clickedFrequency, "* 2/3!", -0.006));
+             this.objects.push(new FadingText(this, displayTextAtFrequency, "* 2/3!", -0.006));
 
              if(newFrequency < this.fundamentalFreq * this.highestAllowedInterval){
                 this.objects.push(new NoteArrow(this, newFrequency, "+", false));
              }
         }else{
-             this.objects.push(new FadingText(this, clickedFrequency, "* 3/2!", 0.006));
+             this.objects.push(new FadingText(this, displayTextAtFrequency, "* 3/2!", 0.006));
              if(newFrequency > this.fundamentalFreq / this.highestAllowedInterval){
                  this.objects.push(new NoteArrow(this, newFrequency, "+", true));
              }
