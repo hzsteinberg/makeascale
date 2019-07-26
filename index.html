@@ -15,6 +15,11 @@
 		  margin: 0px;
 		  overflow: hidden;
 		}
+        @media (max-width: 600px) {
+            body{
+               font-size: 16px;
+            }
+        }
     
         canvas{
             width: 100%;
@@ -27,7 +32,6 @@
 
         .overlay{
             z-index: 2;
-            background-color: rgba(255,255,255);
             color: black;
             position: absolute; 
         }
@@ -44,10 +48,20 @@
         .btn{
             display: flex;
             align-items: center;
+            background-color: rgba(255,255,255);
             border-radius: 50px;
             padding: 1em;
+            margin: 0.2em;
             transition: opacity 0.5s;
         }
+        .btn:hover{
+            transform: scale(1.03);
+        }
+        .btn:click{
+            background-color: #ffd;
+        }
+
+
         #playScaleBtn{
             bottom: 10%; 
             right: 5%;
@@ -56,11 +70,15 @@
             bottom: 10%; 
             left: 5%;
         }
-        .btn:hover{
-            transform: scale(1.03);
+
+        #equalTemperamentSettings{
+            top: 2%; 
+            right: 2%;
+            max-width: 30%;
         }
-        .btn:click{
-            background-color: #ffd;
+        #toggleEqualTemperamentButton{
+        }
+        #equalTemperamentSnapButton{
         }
 	</style>
 
@@ -88,8 +106,9 @@
 	<div id="container"><canvas id="canvas" style="position: absolute; top: 0px; left: 0px;" />
 	</div>
 
-    <div id="settings" class="overlay">
-        <input type="checkbox" onclick="scale.showEqualTemperamentLines = this.checked">Show equally-spaced equal temperament frequency lines?</input>
+    <div id="equalTemperamentSettings" class="overlay">
+        <div id="toggleEqualTemperamentButton" class="btn" onclick="toggleEqualTemperamentLines()"><span>Show equally-spaced equal temperament frequency lines?</span></div>
+        <div id="equalTemperamentSnapButton" class="btn" onclick="snapNotesToEqualTemperament()" style="opacity: 0; pointer-events: none"><span>Snap notes to <b>12</b>-tone equal temperament</span></div>
     </div>
 
     <div id="playScaleBtn" class="overlay btn" style="opacity: 0; pointer-events: none" onclick="beginSelectingScaleStart()"><span>Play all pitches in your scale</span></div>

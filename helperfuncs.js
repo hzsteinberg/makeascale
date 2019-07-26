@@ -113,3 +113,30 @@ function playAllNotesInScale(fundamentalFreq){
         }, delay*1000);
     })
 }
+
+function toggleEqualTemperamentLines(){
+    let isShowing = !scale.showEqualTemperamentLines;
+    scale.showEqualTemperamentLines = isShowing;
+    if(isShowing){
+        //show 'snap to equal temperament' button
+        document.getElementById("equalTemperamentSnapButton").style.pointerEvents = "";
+        document.getElementById("equalTemperamentSnapButton").style.opacity = "1"; 
+    }
+}
+
+function snapNotesToEqualTemperament(){
+    //format: [Note, freq]
+    let numDivisions = 12;
+    for(var i=0;i<scale.objects.length;i++){
+      if((scale.objects[i]).constructor === Note){
+        
+        let pitch = Math.log(scale.objects[i].frequency)/Math.log(2);
+        let rootPitch = Math.log(scale.fundamentalFreq)/Math.log(2)
+
+        let quantizedPitch = Math.round((pitch-rootPitch)*numDivisions)/numDivisions+rootPitch;
+
+        let quantizedFreq = Math.pow(2, quantizedPitch);
+        scale.objects[i].frequency = quantizedFreq;
+      }
+    }
+}
