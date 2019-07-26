@@ -3,7 +3,8 @@
 class FirstNote extends Note{
     constructor(parent){
         super(parent, 440);
-         this.hasAnnouncedOwnPresence = true;
+        this.hasAnnouncedOwnPresence = true;
+        this.creationDelay = 0;
     }
     draw(context){
         this.pos = this.parent.freqToRenderPos(this.frequency);

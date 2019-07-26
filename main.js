@@ -26,7 +26,7 @@ class MainSimulation{
 
         this.numNotes = 0;
 
-        // used to transition between linear frequency scale and radial frequency scale
+        // used to transition between linear frequency scale and radial frequency scales
         this.lerpFactor = 0;
         this.targetLerpFactor = 0;
         this.targetMode = "linear";
@@ -70,10 +70,20 @@ class MainSimulation{
 
     fifthsFreqToAngle(freq){
 
-        let octaveNumber = Math.log(freq)/Math.log(2);
-        let referenceOctaveNumber = Math.log(440)/Math.log(2); //orient the angles so that 440 is on the right
 
-        return ((octaveNumber - referenceOctaveNumber)/(7/12) * (Math.PI/6)) % (Math.PI*2);
+        let freqToFifthsAngle = (freq) => {
+
+            let octaveNumber = Math.log(freq)/Math.log(2);
+            let referenceOctaveNumber = Math.log(440)/Math.log(2); //orient the angles so that 440 is on the right
+            return ((octaveNumber - referenceOctaveNumber)/(7/12) * (Math.PI/6));
+        }
+
+
+        //now rotate the circle to ensure that this.fundamentalFreq has the same angle in radial and fifths mode
+        let fundamentalFifthsAngle = freqToFifthsAngle(this.fundamentalFreq);
+        let normalFundamentalAngle = this.freqToAngle(this.fundamentalFreq);
+
+        return (freqToFifthsAngle(freq) - fundamentalFifthsAngle + normalFundamentalAngle) % (Math.PI*2);
 
     }
 
@@ -108,7 +118,7 @@ class MainSimulation{
         //on a line instead of a circle. currently broken
         let numOctavesInLine = 2;
         let octaveNumber = Math.log(freq)/Math.log(2);
-        let middlePitch = Math.log(this.fundamentalFreq)/Math.log(2);
+        let middlePitch = Math.log(880)/Math.log(2);
         let linearPos = ((octaveNumber-middlePitch) / numOctavesInLine * (this.width) );
         return [linearPos, rOffset];
 
@@ -199,9 +209,9 @@ class MainSimulation{
         this.last_t = t;
 
 
+        //if transitioning between modes, update
         if(Math.abs(this.lerpFactor - this.targetLerpFactor) > 0.01){
             this.lerpFactor += 1 * Math.sign(this.targetLerpFactor-this.lerpFactor) * dt;
-
         }else{
             this.lerpFactor = this.targetLerpFactor; 
             this.currentMode = this.targetMode;
@@ -218,12 +228,10 @@ class MainSimulation{
         this.updateCanvasSize();
        // context.fillRect(0,0,this.width,this.height);
 
-        //draw circle
+        //draw the line/circle along which all notes lie
         context.beginPath();
         context.strokeStyle = "#222";
         context.lineWidth = 5;
-
-
         
         let numOctavesToDraw = 1;
         if(this.currentMode == 'linear'){
@@ -245,14 +253,26 @@ class MainSimulation{
         //draw evenly spaced equal temperament ticks
         context.lineWidth = 3;
         if(this.showEqualTemperamentLines){
-            for(let exponent=-3;exponent <= 3; exponent += 1/12){
 
+            let distanceBetweenTicks = 1/12;
+            if(this.currentMode == "fifths" || this.targetMode == "fifths"){
+                distanceBetweenTicks = 7/12;
+            }
+
+
+            for(let exponent=0;exponent <= 4; exponent += distanceBetweenTicks){
+                //positive direction
                 context.beginPath();
                 let freq = this.fundamentalFreq * 2**(exponent);
-                
                 context.moveTo(...this.freqToRenderPos(freq,60));
                 context.lineTo(...this.freqToRenderPos(freq,-60));
+                context.stroke();
 
+                //negative direction
+                context.beginPath();
+                freq = this.fundamentalFreq * 2**(-exponent);
+                context.moveTo(...this.freqToRenderPos(freq,60));
+                context.lineTo(...this.freqToRenderPos(freq,-60));
                 context.stroke();
             }
         }
