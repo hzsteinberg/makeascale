@@ -59,6 +59,11 @@ class MainSimulation{
     }
 
     freqToAngle(freq){
+        if(this.currentMode == 'fifths')return this.fifthsFreqToAngle(freq);
+        return this.radialFreqToAngle(freq);
+    }
+
+    radialFreqToAngle(freq){
 
         let octaveNumber = Math.log(freq)/Math.log(2);
 
@@ -81,7 +86,7 @@ class MainSimulation{
 
         //now rotate the circle to ensure that this.fundamentalFreq has the same angle in radial and fifths mode
         let fundamentalFifthsAngle = freqToFifthsAngle(this.fundamentalFreq);
-        let normalFundamentalAngle = this.freqToAngle(this.fundamentalFreq);
+        let normalFundamentalAngle = this.radialFreqToAngle(this.fundamentalFreq);
 
         return (freqToFifthsAngle(freq) - fundamentalFifthsAngle + normalFundamentalAngle) % (Math.PI*2);
 
@@ -94,7 +99,7 @@ class MainSimulation{
 
         let octaveNumber = Math.log(freq)/Math.log(2);
 
-        let angle = this.freqToAngle(freq);
+        let angle = this.radialFreqToAngle(freq);
 
         return [r*Math.cos(angle), r*Math.sin(angle)];
 
@@ -314,11 +319,13 @@ class MainSimulation{
              this.objects.push(new FadingText(this, displayTextAtFrequency, "* 2/3!", -0.006));
 
              if(newFrequency < this.fundamentalFreq * this.highestAllowedInterval){
+                this.objects.push(new FifthsNoteArrow(this, clickedFrequency,false));
                 this.objects.push(new NoteArrow(this, newFrequency, "+", false));
              }
         }else{
              this.objects.push(new FadingText(this, displayTextAtFrequency, "* 3/2!", 0.006));
              if(newFrequency > this.fundamentalFreq / this.highestAllowedInterval){
+                this.objects.push(new FifthsNoteArrow(this, clickedFrequency,true));
                  this.objects.push(new NoteArrow(this, newFrequency, "+", true));
              }
         }

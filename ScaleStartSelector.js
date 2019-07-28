@@ -150,7 +150,7 @@ class MultiNoteSelector extends Note{
     }
     onmousedown(x,y){
         //convert mouse angle to this
-       if(this.parent.currentMode == "radial"){
+       if(this.parent.currentMode == "radial" || this.parent.currentMode == "fifths"){
             this.mouseAngle = Math.atan2(y-this.parent.centerPos[1],x-this.parent.centerPos[0]);
             this.calcSelectedNote();
         }else{
