@@ -33,7 +33,7 @@ class Note extends GameObject{
     }
 
     drawNoteCircle(context, pos, frequency, isEcho=false){
-        let angle = this.parent.freqToAngle(frequency)// - this.parent.freqToAngle(440);
+        let angle = this.parent.radialFreqToAngle(frequency)
         let hueVal = ((angle/Math.PI/2 + 0.5)*360 + 180)%360;
 
         let opacity = isEcho ? 0.5: 1.0;
