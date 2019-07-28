@@ -7,6 +7,7 @@ class ScaleStartNoteSelector extends Note{
         this.mouseAngle = 0;
 
         this.selectedNote = null;
+        this.calcSelectedNote();
     }
     draw(context){
         if(!this.hasAnnouncedOwnPresence)return;
@@ -30,6 +31,8 @@ class ScaleStartNoteSelector extends Note{
     }
     onmousedown(x,y){
         if(!this.clickedOnce){
+            if(this.selectedNote === null)return;
+
             this.clickedOnce = true;
             this.targetRadius = -1;
 
@@ -38,7 +41,7 @@ class ScaleStartNoteSelector extends Note{
     }
     onclick(){}
 
-    calcSelectedNote(){
+    calcSelectedNoteRadially(){
         let angles = [];
         let minAngle = 999;
         let selectedIndex = 0;
@@ -54,6 +57,8 @@ class ScaleStartNoteSelector extends Note{
             }
           }
         }
+        if(minAngle == 999)return;
+
         this.selectedNote = this.parent.objects[selectedIndex];
         
     }
@@ -64,8 +69,12 @@ class ScaleStartNoteSelector extends Note{
     }
     onmousemove(x,y){
         //convert mouse angle to this
-        this.mouseAngle = Math.atan2(y-this.parent.centerPos[1],x-this.parent.centerPos[0]);
-        this.calcSelectedNote();
+        if(this.parent.currentMode == "radial" || this.parent.currentMode == "fifths"){
+            this.mouseAngle = Math.atan2(y-this.parent.centerPos[1],x-this.parent.centerPos[0]);
+            this.calcSelectedNote();
+        }else{
+                //need to calculate...
+        }
     }
 }
 
@@ -152,7 +161,7 @@ class MultiNoteSelector extends Note{
         //convert mouse angle to this
        if(this.parent.currentMode == "radial" || this.parent.currentMode == "fifths"){
             this.mouseAngle = Math.atan2(y-this.parent.centerPos[1],x-this.parent.centerPos[0]);
-            this.calcSelectedNote();
+            this.calcSelectedNoteRadially();
         }else{
             //need to calculate...
         }
