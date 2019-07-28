@@ -7,7 +7,7 @@ class ScaleStartNoteSelector extends Note{
         this.mouseAngle = 0;
 
         this.selectedNote = null;
-        this.calcSelectedNote();
+        this.calcSelectedNoteRadially();
     }
     draw(context){
         if(!this.hasAnnouncedOwnPresence)return;
@@ -71,7 +71,7 @@ class ScaleStartNoteSelector extends Note{
         //convert mouse angle to this
         if(this.parent.currentMode == "radial" || this.parent.currentMode == "fifths"){
             this.mouseAngle = Math.atan2(y-this.parent.centerPos[1],x-this.parent.centerPos[0]);
-            this.calcSelectedNote();
+            this.calcSelectedNoteRadially();
         }else{
                 //need to calculate...
         }
