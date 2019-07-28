@@ -2,7 +2,7 @@
 
 class FirstNote extends Note{
     constructor(parent){
-        super(parent, 440);
+        super(parent, 880);
         this.hasAnnouncedOwnPresence = true;
         this.creationDelay = 0;
     }
