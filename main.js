@@ -215,7 +215,7 @@ class MainSimulation{
 
 
         //if transitioning between modes, update
-        if(Math.abs(this.lerpFactor - this.targetLerpFactor) > 0.01){
+        if(Math.abs(this.lerpFactor - this.targetLerpFactor) > 0.05){
             this.lerpFactor += 1 * Math.sign(this.targetLerpFactor-this.lerpFactor) * dt;
         }else{
             this.lerpFactor = this.targetLerpFactor; 
