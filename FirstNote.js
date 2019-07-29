@@ -58,9 +58,11 @@ class FirstNote extends Note{
 
     }
 
-    onclick(){
+    onmousedown(x,y){
+      if(dist([x,y],this.pos) < 60){
         this.beingDragged = true;
         this.showDragText = false;
+      }
     }
     onmouseup(x,y){
         this.beingDragged = false;

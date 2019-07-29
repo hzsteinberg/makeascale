@@ -156,9 +156,11 @@ class MainSimulation{
     ontouchmove(event){
         event.preventDefault();
 
+        let rect = this.canvas.getBoundingClientRect();
+
         for(var i=0;i<event.touches.length;i++){
             let touch = event.touches[i];
-            this.onmousemove({x: touch.clientX, y: touch.clientY});
+            this.onmousedown({x: touch.clientX - rect.left, y: touch.clientY- rect.top});
         }
 
     }
@@ -178,9 +180,12 @@ class MainSimulation{
 
     ontouchstart(event){
         if(event.target == this.canvas)event.preventDefault();
+
+        let rect = this.canvas.getBoundingClientRect();
+
         for(var i=0;i<event.touches.length;i++){
             let touch = event.touches[i];
-            this.onmousedown({x: touch.clientX, y: touch.clientY});
+            this.onmousedown({x: touch.clientX - rect.left, y: touch.clientY- rect.top});
         }
     }
 
