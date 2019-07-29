@@ -158,7 +158,7 @@ class MainSimulation{
 
         for(var i=0;i<event.touches.length;i++){
             let touch = event.touches[i];
-            this.onmousemove({x: event.clientX, y: event.clientY});
+            this.onmousemove({x: touch.clientX, y: touch.clientY});
         }
 
     }
