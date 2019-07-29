@@ -62,7 +62,13 @@ class Note extends GameObject{
         //the note frequency text
         context.fillStyle = "black";
         context.font = "16" + "px calibri";
-        drawCenteredText(context, formatFreq(frequency),  pos[0],pos[1]);
+
+        let text = formatFreq(frequency);
+        if(this.parent.currentMode == "radial"){
+            text = formatFreq(this.parent.mainOctavize(frequency));
+        }
+
+        drawCenteredText(context, text, pos[0], pos[1]);
 
     }
 

@@ -5,6 +5,7 @@ class FirstNote extends Note{
         super(parent, 880);
         this.hasAnnouncedOwnPresence = true;
         this.creationDelay = 0;
+        this.beingDragged = false;
     }
     draw(context){
         this.pos = this.parent.freqToRenderPos(this.frequency);
@@ -33,7 +34,7 @@ class FirstNote extends Note{
         drawCenteredText(context, "Start scale using this as",  textPos[0], textPos[1]);
         drawCenteredText(context, "the fundamental frequency?", textPos[0],textPos[1] + 25);
     }
-    onmousedown(x,y){
+    confirmSelection(){
         if(!this.clickedOnce){
             this.clickedOnce = true;
             this.targetRadius = -1;
@@ -45,12 +46,20 @@ class FirstNote extends Note{
                  new NoteArrow(this.parent, this.frequency, "+", false)]);
             this.parent.numNotes++;
         }
+
     }
-    onclick(){}
+
+    onclick(){
+        this.beingDragged = true;
+    }
+    onmouseup(x,y){
+        this.beingDragged = false;
+    }
     onmousemove(x,y){
         //convert mouse angle to this
 
         if(this.clickedOnce)return;
+        if(!this.beingDragged)return;
 
         if(this.parent.currentMode == "linear"){
             let xPos = x/this.parent.width;

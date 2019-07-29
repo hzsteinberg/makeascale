@@ -209,13 +209,13 @@ class MainSimulation{
     cycleMode(){
         if(this.currentMode == "linear"){
             this.changeModeTo("radial");
-            document.getElementById("displayModeBtn").innerHTML = "Change view to: Circle of Fifths";
+            document.getElementById("displayModeBtn").innerHTML = "Show Circle of Ratios";
         }else if(this.currentMode == "radial"){
             this.changeModeTo("fifths");
-            document.getElementById("displayModeBtn").innerHTML = "Change view to: Frequency";
+            document.getElementById("displayModeBtn").innerHTML = "Show Frequency";
         }else{
             this.changeModeTo("linear");
-            document.getElementById("displayModeBtn").innerHTML = "Change view to: Octave";
+            document.getElementById("displayModeBtn").innerHTML = "Show Octave";
         }
     }
 

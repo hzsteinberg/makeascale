@@ -140,3 +140,14 @@ function snapNotesToEqualTemperament(){
       }
     }
 }
+
+let scaleStarted = false;
+function startScale(){
+    if(scaleStarted)return;
+    scaleStarted = true;
+
+    scale.objects[0].confirmSelection();
+    document.getElementById("scalestartBtn").style.opacity = "0";
+    document.getElementById("scalestartBtn").style.pointerEvents = "none";
+
+}
