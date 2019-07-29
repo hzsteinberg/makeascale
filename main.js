@@ -49,8 +49,8 @@ class MainSimulation{
         window.addEventListener("mousedown", this.onmousedown.bind(this));
         window.addEventListener("mouseup", this.onmouseup.bind(this));
 
-        window.addEventListener("touchmove", this.onmousemove.bind(this));
-        window.addEventListener("touchstart", this.onmousedown.bind(this));
+        window.addEventListener("touchmove", this.ontouchmove.bind(this));
+        window.addEventListener("touchstart", this.ontouchstart.bind(this));
         window.addEventListener("touchend", this.onmouseup.bind(this));
         window.addEventListener("touchcancel", this.onmouseup.bind(this));
     }
@@ -152,7 +152,18 @@ class MainSimulation{
 
     }
 
-    onmousemove(){
+
+    ontouchmove(event){
+        if(event.target == this.canvas)event.preventDefault();
+
+        for(var i=0;i<event.touches.length;i++){
+            let touch = event.touches[i];
+            this.onmousemove({x: event.clientX, y: event.clientY});
+        }
+
+    }
+
+    onmousemove(event){
         let x = event.x;
         let y = event.y;
         for(var i=0;i<this.objects.length;i++){
@@ -163,6 +174,14 @@ class MainSimulation{
             }
         }
 
+    }
+
+    ontouchstart(event){
+        if(event.target == this.canvas)event.preventDefault();
+        for(var i=0;i<event.touches.length;i++){
+            let touch = event.touches[i];
+            this.onmousedown({x: touch.clientX, y: touch.clientY});
+        }
     }
 
     onmousedown(event){
