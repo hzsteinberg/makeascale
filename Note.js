@@ -77,7 +77,7 @@ class Note extends GameObject{
 
         //if linear, draw echoes at other octaves
         if(this.parent.currentMode == 'linear'){
-            const numOctaveEchoes = 5;
+            const numOctaveEchoes = 8;
             for(var i=-numOctaveEchoes; i<=numOctaveEchoes;i++){
                 if(i==0)continue
 
@@ -152,7 +152,7 @@ class Note extends GameObject{
 
             //test echoes if there are any
             if(this.parent.currentMode == 'linear' || this.parent.targetMode == "linear"){
-                const numOctaveEchoes = 5;
+                const numOctaveEchoes = 8;
                 for(var i=-numOctaveEchoes; i<=numOctaveEchoes;i++){
                     let echoFreq = this.frequency * (2**i);
                     let pos = this.parent.freqToRenderPos(echoFreq);
@@ -191,7 +191,7 @@ class Note extends GameObject{
     onmousedown(x,y){
       //test this and echoes for clicking.
       if(this.parent.currentMode == 'linear'){
-          const numOctaveEchoes = 5;
+          const numOctaveEchoes = 8;
           for(var i=-numOctaveEchoes; i<numOctaveEchoes;i++){
                 let echoFreq = this.frequency * (2**i);
                 let pos = this.parent.freqToRenderPos(echoFreq);

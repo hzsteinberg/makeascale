@@ -154,7 +154,7 @@ class MainSimulation{
 
 
     ontouchmove(event){
-        if(event.target == this.canvas)event.preventDefault();
+        event.preventDefault();
 
         for(var i=0;i<event.touches.length;i++){
             let touch = event.touches[i];
@@ -209,13 +209,13 @@ class MainSimulation{
     cycleMode(){
         if(this.currentMode == "linear"){
             this.changeModeTo("radial");
-            document.getElementById("displayModeBtn").innerHTML = "View: Octave";
+            document.getElementById("displayModeBtn").innerHTML = "Change view to: Circle of Fifths";
         }else if(this.currentMode == "radial"){
             this.changeModeTo("fifths");
-            document.getElementById("displayModeBtn").innerHTML = "View: Circle of Fifths";
+            document.getElementById("displayModeBtn").innerHTML = "Change view to: Frequency";
         }else{
             this.changeModeTo("linear");
-            document.getElementById("displayModeBtn").innerHTML = "View: Frequency";
+            document.getElementById("displayModeBtn").innerHTML = "Change view to: Octave";
         }
     }
 

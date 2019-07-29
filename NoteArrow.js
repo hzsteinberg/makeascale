@@ -81,7 +81,7 @@ class NoteArrow extends GameObject{
 
         //if linear, draw echoes at other octaves
         if(this.parent.currentMode == 'linear'){
-            const numOctaveEchoes = 5;
+            const numOctaveEchoes = 8;
             for(var i=-numOctaveEchoes; i<=numOctaveEchoes;i++){
                 if(i==0)continue
                     let echoFrequency = this.frequency * (2**i);
