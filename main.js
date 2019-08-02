@@ -49,10 +49,10 @@ class MainSimulation{
         window.addEventListener("mousedown", this.onmousedown.bind(this));
         window.addEventListener("mouseup", this.onmouseup.bind(this));
 
-        window.addEventListener("touchmove", this.ontouchmove.bind(this));
-        window.addEventListener("touchstart", this.ontouchstart.bind(this));
-        window.addEventListener("touchend", this.onmouseup.bind(this));
-        window.addEventListener("touchcancel", this.onmouseup.bind(this));
+        window.addEventListener("touchmove", this.ontouchmove.bind(this),{'passive':false});
+        window.addEventListener("touchstart", this.ontouchstart.bind(this),{'passive':false});
+        window.addEventListener("touchend", this.onmouseup.bind(this),{'passive':false});
+        window.addEventListener("touchcancel", this.onmouseup.bind(this),{'passive':false});
     }
 
     updateCanvasSize(){
