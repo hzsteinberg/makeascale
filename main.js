@@ -49,10 +49,10 @@ class MainSimulation{
         window.addEventListener("mousedown", this.onmousedown.bind(this));
         window.addEventListener("mouseup", this.onmouseup.bind(this));
 
-        window.addEventListener("touchmove", this.ontouchmove.bind(this));
-        window.addEventListener("touchstart", this.ontouchstart.bind(this));
-        window.addEventListener("touchend", this.onmouseup.bind(this));
-        window.addEventListener("touchcancel", this.onmouseup.bind(this));
+        window.addEventListener("touchmove", this.ontouchmove.bind(this),{'passive':false});
+        window.addEventListener("touchstart", this.ontouchstart.bind(this),{'passive':false});
+        window.addEventListener("touchend", this.onmouseup.bind(this),{'passive':false});
+        window.addEventListener("touchcancel", this.onmouseup.bind(this),{'passive':false});
     }
 
     updateCanvasSize(){
@@ -214,13 +214,13 @@ class MainSimulation{
     cycleMode(){
         if(this.currentMode == "linear"){
             this.changeModeTo("radial");
-            document.getElementById("displayModeBtn").innerHTML = "Show Circle of Ratios";
+            document.getElementById("displayModeBtn").innerHTML = "View: Octave";
         }else if(this.currentMode == "radial"){
             this.changeModeTo("fifths");
-            document.getElementById("displayModeBtn").innerHTML = "Show Frequency";
+            document.getElementById("displayModeBtn").innerHTML = "View: Ratios";
         }else{
             this.changeModeTo("linear");
-            document.getElementById("displayModeBtn").innerHTML = "Show Octave";
+            document.getElementById("displayModeBtn").innerHTML = "View: Frequency";
         }
     }
 

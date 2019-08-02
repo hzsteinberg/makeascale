@@ -36,15 +36,6 @@
             position: absolute; 
         }
 
-        #settings{
-            bottom: 75%; 
-            right: 0px;
-            width: 200px;
-            top: 0%;
-            max-width: 25%;
-            padding: 1.5em 3em 0.5em;
-            border-radius: 0 0 0 200px;
-        }
         .btn{
             display: flex;
             align-items: center;
@@ -80,11 +71,22 @@
             pointer-events: none;
         }
 
-        #equalTemperamentSettings{
-            top: 2%; 
-            right: 2%;
-            max-width: 30%;
+        #settings{
+            right: 0%;
+            top: 0%;
+            margin-right: 0;
+            max-width: 50%;
+            display: grid;
+            grid: 2fr 2fr / 2fr 2fr;
+
+            background-color: rgba(0,0,0,0.2);
         }
+        #settingsGear{
+            position: absolute;
+            left: calc(-64px - 10px);
+            top: 10px;
+        }
+
         #toggleEqualTemperamentButton{
         }
         #equalTemperamentSnapButton{
@@ -99,6 +101,7 @@
 	<script src="NoteArrow.js"></script>
 	<script src="Note.js"></script>
 	<script src="ScaleStartSelector.js"></script>
+	<script src="buttons.js"></script>
 	<script src="FirstNote.js"></script>
 	<script src="helperfuncs.js"></script>
     <script>
@@ -116,15 +119,20 @@
 	<div id="container"><canvas id="canvas" style="position: absolute; top: 0px; left: 0px;" />
 	</div>
 
-    <div id="equalTemperamentSettings" class="overlay">
-        <div id="toggleEqualTemperamentButton" class="btn" onclick="toggleEqualTemperamentLines()"><span>Show equally-spaced equal temperament frequency lines?</span></div>
-        <div id="equalTemperamentSnapButton" class="btn" onclick="snapNotesToEqualTemperament()" style="opacity: 0; pointer-events: none"><span>Snap notes to <b>12</b>-tone equal temperament</span></div>
-    </div>
-
     <div id="playScaleBtn" class="overlay btn" style="opacity: 0; pointer-events: none" onclick="beginSelectingScaleStart()"><span>Play all pitches in your scale</span></div>
 
     <div id="scaleStartContainer" class="overlay">
         <div id="scalestartBtn" class="btn" onclick="startScale();"><span>Start Scale</span></div>
+    </div>
+
+    <div id="settings" class="overlay">
+       <div id="settingsGear" onclick="toggleSettings">
+         <img width='64' height='64' src="iconmonstr-gear-1.svg"></img>
+       </div>
+        <div id="toggleEqualTemperamentButton" class="btn" onclick="toggleEqualTemperamentLines()"><span>Show equally-spaced equal temperament frequency lines?</span></div>
+        <div id="equalTemperamentSnapButton" class="btn" onclick="snapNotesToEqualTemperament()" satyle="opacity: 0; pointer-events: none"><span>Snap notes to <b>12</b>-tone equal temperament</span></div>
+
+        
     </div>
 
 
