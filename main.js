@@ -157,10 +157,10 @@ class MainSimulation{
         event.preventDefault();
 
         let rect = this.canvas.getBoundingClientRect();
-
+        
         for(var i=0;i<event.touches.length;i++){
             let touch = event.touches[i];
-            this.onmousedown({x: touch.clientX - rect.left, y: touch.clientY- rect.top});
+            this.onmousemove({x: touch.clientX - rect.left, y: touch.clientY- rect.top});
         }
 
     }
