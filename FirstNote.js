@@ -48,6 +48,7 @@ class FirstNote extends Note{
             this.selectionConfirmed = true;
             this.targetRadius = -1;
 
+
             this.parent.fundamentalFreq = this.frequency;
             this.parent.objects = this.parent.objects.concat([
                  new Note(this.parent, this.frequency, true),
@@ -77,14 +78,14 @@ class FirstNote extends Note{
             let xPos = x/this.parent.width;
             let exponent = xPos * 2;
 
-            this.frequency = 440 * 2**(exponent);
+            this.frequency = parseInt(440 * 2**(exponent));
         }else if(this.parent.currentMode == "radial"){
 
             let angle = Math.atan2(y-this.parent.centerPos[1],x-this.parent.centerPos[0]);
            
             let exponent = (angle) / Math.PI /2 //now from -0.5 to 0.5
 
-            this.frequency = 440 * 2**(exponent);
+            this.frequency = parseInt(440 * 2**(exponent));
         }else{
         }
     }
