@@ -214,13 +214,13 @@ class MainSimulation{
     cycleMode(){
         if(this.currentMode == "linear"){
             this.changeModeTo("radial");
-            document.getElementById("displayModeBtn").innerHTML = "Show Circle of Ratios";
+            document.getElementById("displayModeBtn").innerHTML = "View: Octave";
         }else if(this.currentMode == "radial"){
             this.changeModeTo("fifths");
-            document.getElementById("displayModeBtn").innerHTML = "Show Frequency";
+            document.getElementById("displayModeBtn").innerHTML = "View: Ratios";
         }else{
             this.changeModeTo("linear");
-            document.getElementById("displayModeBtn").innerHTML = "Show Octave";
+            document.getElementById("displayModeBtn").innerHTML = "View: Frequency";
         }
     }
 
