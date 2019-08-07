@@ -96,7 +96,16 @@ function closeSettingsMenu(){
 }
 
 document.addEventListener('DOMContentLoaded', function(){
-    document.getElementById("canvas").addEventListener('click', closeSettingsMenu, false);
-    document.getElementById("canvas").addEventListener('touchstart', closeSettingsMenu, false);
+    let canvas = document.getElementById("canvas");
+    canvas.addEventListener('click', closeSettingsMenu, false);
+    canvas.addEventListener('touchstart', closeSettingsMenu, false);
+
+    //work around iOS not starting audiocontext until user interaction is played
+    let playedDummyNote = false;
+    canvas.addEventListener('touchend', function(){
+        if(playedDummyNote)return;
+        scale.synth.triggerAttackRelease(0.1, 0.0001); //super low frequency synth note to 
+        playedDummyNote = true;
+    },false);
 }, false);
     
