@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
     //work around iOS not starting audiocontext until user interaction is played
     let playedDummyNote = false;
-    canvas.addEventListener('touchend', function(){
+    document.addEventListener('touchend', function(){
         if(playedDummyNote)return;
         scale.synth.triggerAttackRelease(0.1, 0.0001); //super low frequency synth note to 
         playedDummyNote = true;
