@@ -80,3 +80,25 @@ function startScale(){
     document.getElementById("scalestartBtn").style.pointerEvents = "none";
 
 }
+
+let settingsMenuVisible = false;
+function toggleSettingsMenu(){
+    settingsMenuVisible = !settingsMenuVisible;
+    if(settingsMenuVisible){
+        document.getElementById("settings").style.left = "50%";
+        document.getElementById("settings").style.right = "0%";
+    }else{
+        closeSettingsMenu();
+    }
+}
+function closeSettingsMenu(){
+        settingsMenuVisible = false;
+        document.getElementById("settings").style.left = "100%";
+        document.getElementById("settings").style.right = "-50%";
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+    document.getElementById("canvas").addEventListener('click', closeSettingsMenu, false);
+    document.getElementById("canvas").addEventListener('touchstart', closeSettingsMenu, false);
+}, false);
+    
