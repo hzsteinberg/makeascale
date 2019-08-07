@@ -101,11 +101,13 @@ document.addEventListener('DOMContentLoaded', function(){
     canvas.addEventListener('touchstart', closeSettingsMenu, false);
 
     //work around iOS not starting audiocontext until user interaction is played
-    let playedDummyNote = false;
-    document.addEventListener('touchend', function(){
-        if(playedDummyNote)return;
-        scale.synth.triggerAttackRelease(0.1, 0.0001); //super low frequency synth note to 
-        playedDummyNote = true;
-    },false);
+    document.addEventListener('touchstart', activateIOSSoundHack,false);
+    document.addEventListener('touchend', activateIOSSoundHack,false);
 }, false);
     
+function activateIOSSoundHack(){
+    scale.synth.triggerAttackRelease(0.1, 0.0001); //super low frequency synth note to start an audio context
+    //only activate this once
+    document.removeEventListener('touchstart',activateIOSSoundHack, false);
+    document.removeEventListener('touchend',activateIOSSoundHack, false);
+}
