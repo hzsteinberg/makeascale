@@ -85,16 +85,14 @@ let settingsMenuVisible = false;
 function toggleSettingsMenu(){
     settingsMenuVisible = !settingsMenuVisible;
     if(settingsMenuVisible){
-        document.getElementById("settings").style.left = "50%";
-        document.getElementById("settings").style.right = "0%";
+        document.getElementById("settings").classList.add("settings-visible");
     }else{
         closeSettingsMenu();
     }
 }
 function closeSettingsMenu(){
         settingsMenuVisible = false;
-        document.getElementById("settings").style.left = "100%";
-        document.getElementById("settings").style.right = "-50%";
+        document.getElementById("settings").classList.remove("settings-visible");
 }
 
 document.addEventListener('DOMContentLoaded', function(){

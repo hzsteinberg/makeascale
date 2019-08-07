@@ -15,11 +15,6 @@
 		  margin: 0px;
 		  overflow: hidden;
 		}
-        @media (max-width: 600px) {
-            body{
-               font-size: 16px;
-            }
-        }
     
         canvas{
             width: 100%;
@@ -69,24 +64,30 @@
         }
         #scaleStartContainer{
             width: 100%; bottom: 10%; display: flex;
+            margin: 0.2em;
             pointer-events: none;
         }
 
-        #settings{
-            right: 0%;
+        .settings{
+            left: 100%; right:-50%; /*overwritten to scroll into view */
+
             top: 0%;
             margin-right: 0;
             max-width: 50%;
             display: grid;
             grid: 2fr 3fr / 2fr 2fr;
 
-            background-color: rgba(0,0,0,0.2);
-            transition: opacity 0.5s ease-out, left 0.25s cubic-bezier(.22,.61,.36,1), right 0.25s cubic-bezier(.22,.61,.36,1);
+            background-color: rgba(0,0,0,0.3);
+            transition: opacity 0.5s ease-out, left 0.2s cubic-bezier(.22,.61,.36,1), right 0.2s cubic-bezier(.22,.61,.36,1);
             border-radius: 0 0 0 2em;
+        }
+        .settings-visible{
+            left: 50%; 
+            right: 0%;
         }
         #settingsGear{
             position: absolute;
-            left: calc(-64px - 10px);
+            left: calc(-80px - 10px);
             top: 10px;
         }
         #settingsGear:hover{
@@ -96,6 +97,33 @@
         #toggleEqualTemperamentButton{
         }
         #equalTemperamentSnapButton{
+        }
+
+
+        @media (max-width: 700px) {
+            body{
+               font-size: 16px;
+            }
+
+            .settings{
+                max-width: 75%;
+                right: -75%;
+            }
+            .settings-visible{
+                left: 25%; 
+                right: 0%;
+            }
+
+                #playScaleBtn{
+                    bottom: 2.5%; 
+                }
+                #displayModeBtn{
+                    bottom: 2.5%;
+                }
+                #scaleStartContainer{
+                    bottom: 15%;
+                }
+
         }
 	</style>
 
@@ -131,9 +159,9 @@
         <div id="scalestartBtn" class="btn" onclick="startScale();"><span>Start Scale</span></div>
     </div>
 
-    <div id="settings" class="overlay" style="left: 100%; right:-50%;">
+    <div id="settings" class="settings overlay">
        <div id="settingsGear" onclick="toggleSettingsMenu()">
-         <img width='64' height='64' src="iconmonstr-gear-1.svg"></img>
+         <img width='80' height='80' src="iconmonstr-gear-1.svg"></img>
        </div>
         <div id="toggleEqualTemperamentButton" class="btn" onclick="toggleEqualTemperamentLines()"><span>Show equally-spaced equal temperament frequency lines?</span></div>
         <div id="equalTemperamentSnapButton" class="btn" onclick="snapNotesToEqualTemperament()" style="opacity: 0; pointer-events: none"><span>Snap notes to <b>12</b>-tone equal temperament</span></div>
