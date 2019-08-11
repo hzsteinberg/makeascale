@@ -41,8 +41,28 @@ class ScaleStartNoteSelector extends Note{
     }
     onclick(){}
 
+    calcSelectedNoteLinearly(mouseX){
+        let minDist = 999;
+        let selectedIndex = 0;
+        for(var i=0;i<this.parent.objects.length;i++){
+          if((this.parent.objects[i]).constructor === Note){            
+            const freq = scale.objects[i].frequency;
+            const x = this.parent.linearFreqToRenderPos(freq)[0] + this.parent.centerPos[0];
+
+            const xDist = Math.abs(mouseX - x);
+            if(xDist < minDist){
+                minDist = xDist;
+                selectedIndex = i;
+            }
+          }
+        }
+        if(minDist == 999)return;
+
+        this.selectedNote = this.parent.objects[selectedIndex];
+        
+    }
+
     calcSelectedNoteRadially(){
-        let angles = [];
         let minAngle = 999;
         let selectedIndex = 0;
         for(var i=0;i<this.parent.objects.length;i++){
@@ -74,6 +94,7 @@ class ScaleStartNoteSelector extends Note{
             this.calcSelectedNoteRadially();
         }else{
                 //need to calculate...
+            this.calcSelectedNoteLinearly(x);
         }
     }
 }
