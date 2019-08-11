@@ -1,6 +1,9 @@
-
-
 class Note extends GameObject{
+    /*
+    A note of the scale, with an associated frequency. Clicking on one produces a tone.
+
+    In linear mode, one Note will also draw "echo notes" that display the same note in different octaves.
+    */
     constructor(parent, freq, hasHalo=false){
         super();
         this.frequency = freq;
@@ -20,16 +23,18 @@ class Note extends GameObject{
         this.currentRadius = 0;
         this.radiusSpeed = 3;
 
-        this.creationDelayTimer = 0;
+        this.creationDelayTimer = 0; //for the growing animation when first created
         this.creationDelay = 40;
 
-        this.clickTimer = 0;
-        this.minStayClickedTime = 15;
+        this.clickTimer = 0; //after being clicked, change color for a little bit and play the note
+        this.minStayClickedTime = 10;
         this.isPlaying = false;
 
         this.hasHalo = hasHalo;
 
         this.hasAnnouncedOwnPresence = false; //first time update() is called, play your note once
+
+        this.synth = new Synth(this.parent.audioContext);
     }
 
     drawNoteCircle(context, pos, frequency, isEcho=false){
@@ -106,7 +111,7 @@ class Note extends GameObject{
              this.hasAnnouncedOwnPresence = true;
             
             this.currentPlayingFrequency = this.parent.mainOctavize(this.frequency);
-            this.parent.synth.triggerAttackRelease(this.currentPlayingFrequency, 0.05);
+            this.synth.triggerAttackRelease(this.currentPlayingFrequency, 1.5);
         }
 
         //update timer so circle stops being yellow after being clicked 
@@ -115,7 +120,7 @@ class Note extends GameObject{
             if(this.clickTimer > this.minStayClickedTime && !this.clicked){
                 this.isPlaying = false;
                 this.clickTimer = 0;
-                this.parent.synth.triggerRelease(this.currentPlayingFrequency);
+                this.synth.stop();
                 this.currentPlayingFrequency = 0;
             }
         }
@@ -189,7 +194,8 @@ class Note extends GameObject{
         }
 
         if(!this.isPlaying){
-            this.parent.synth.triggerAttack(freq);
+            this.synth.play(freq);
+            this.isPlaying = true;
             this.currentPlayingFrequency = freq;
         }
         this.changeColorDueToClick();

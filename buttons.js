@@ -6,6 +6,8 @@ function playAllNotesInScale(fundamentalFreq){
         fundamentalFreq = scale.fundamentalFreq;
     }
 
+    let fundamentalNoteData = null; //[noteObj, freq] of the fundamental freq, but one octave higher (to put at the end of the scale)
+
     //format: [Note, freq]
     for(var i=0;i<scale.objects.length;i++){
       if((scale.objects[i]).constructor === Note){
@@ -15,7 +17,7 @@ function playAllNotesInScale(fundamentalFreq){
 
         //put in the fundamental freq a second time, at the end of the scale
         if(freq == fundamentalFreq){
-             freqs.push([scale.objects[i], octavizedFreq*2]);
+             fundamentalNoteData = [scale.objects[i], octavizedFreq*2];
         }
         freqs.push([scale.objects[i], octavizedFreq]);
       }
@@ -25,10 +27,12 @@ function playAllNotesInScale(fundamentalFreq){
     //constrain octave from going too high or too low
     while(freqs[0][1] > 700){
         freqs = freqs.map((o) => [o[0],o[1]/2]);
+        fundamentalNoteData[1] /= 2
     }
 
     while(freqs[0][1] < 100){
         freqs = freqs.map((o) => [o[0],o[1]*2]);
+        fundamentalNoteData[1] *= 2;
     }
 
     //now play all sounds
@@ -36,11 +40,25 @@ function playAllNotesInScale(fundamentalFreq){
         let freq = data[1];
         let noteObj = data[0];
         let delay = i*0.5
-        scale.synth.triggerAttackRelease(freq, 0.25, "+" + delay)
+        noteObj.synth.triggerAttackRelease(freq, 0.25, delay);
         window.setTimeout(function(){
             noteObj.changeColorDueToClick();
         }, delay*1000);
-    })
+    });
+
+    //play the fundamental frequency again, one octave up.
+    //the way synths work, when they play a note they discard any note information afterwards.
+    //this timeout is long enough that the first note should have stopped playing, and therefore won't discard it.
+    let finalNoteDelay = (freqs.length) * 0.5;    
+    window.setTimeout(function(){
+        let noteObj = fundamentalNoteData[0];
+        noteObj.changeColorDueToClick();
+    }, finalNoteDelay);    
+    window.setTimeout(function(){
+        let freq = fundamentalNoteData[1];
+        let noteObj = fundamentalNoteData[0];
+        noteObj.synth.triggerAttackRelease(freq, 0.25, finalNoteDelay - 1);
+    }, 1000);
 }
 
 function toggleEqualTemperamentLines(){
@@ -53,18 +71,26 @@ function toggleEqualTemperamentLines(){
     }
 }
 
+function quantizeToEqualTemperament(fundamentalFreq, freqToBeQuantized, numDivisions){
+    
+        let pitch = Math.log(freqToBeQuantized)/Math.log(2);
+        let rootPitch = Math.log(fundamentalFreq)/Math.log(2)
+
+        let quantizedPitch = Math.round((pitch-rootPitch)*numDivisions)/numDivisions+rootPitch;
+
+        return Math.pow(2, quantizedPitch);
+}
+
 function snapNotesToEqualTemperament(){
     //format: [Note, freq]
     let numDivisions = 12;
     for(var i=0;i<scale.objects.length;i++){
       if((scale.objects[i]).constructor === Note){
         
-        let pitch = Math.log(scale.objects[i].frequency)/Math.log(2);
-        let rootPitch = Math.log(scale.fundamentalFreq)/Math.log(2)
+        let freq = scale.objects[i].frequency;
 
-        let quantizedPitch = Math.round((pitch-rootPitch)*numDivisions)/numDivisions+rootPitch;
+        let quantizedFreq = quantizeToEqualTemperament(scale.fundamentalFreq, freq, numDivisions);
 
-        let quantizedFreq = Math.pow(2, quantizedPitch);
         scale.objects[i].frequency = quantizedFreq;
       }
     }

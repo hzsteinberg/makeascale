@@ -8,6 +8,8 @@ class FirstNote extends Note{
         this.beingDragged = false;
 
         this.showDragText = true;
+
+        this.synth = new Synth(parent.audioContext, 500);
     }
     draw(context){
         this.pos = this.parent.freqToRenderPos(this.frequency);
@@ -16,7 +18,9 @@ class FirstNote extends Note{
         let angle = this.parent.freqToAngle(this.frequency);
         let hueVal = ((angle/Math.PI/2 + 0.5)*360 + 180+35)%360;
 
-        context.fillStyle = "hsl("+hueVal+",100%,90%)";
+        let noteColor = "hsla("+hueVal+",100%,90%)";
+        if(this.beingDragged)noteColor = "hsla("+hueVal+",90%,80%)";
+        context.fillStyle = noteColor;
 
         drawCircle(context, this.pos[0],this.pos[1],this.currentRadius);
 
@@ -63,10 +67,12 @@ class FirstNote extends Note{
       if(dist([x,y],this.pos) < 60){
         this.beingDragged = true;
         this.showDragText = false;
+        this.synth.play(this.frequency);
       }
     }
     onmouseup(x,y){
         this.beingDragged = false;
+        this.synth.stop();
     }
     onmousemove(x,y){
         //convert mouse angle to this
@@ -88,5 +94,6 @@ class FirstNote extends Note{
             this.frequency = parseInt(440 * 2**(exponent));
         }else{
         }
+        this.synth.setFreq(this.frequency);
     }
 }
