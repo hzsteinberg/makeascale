@@ -39,7 +39,7 @@ class FirstNote extends Note{
 
         drawCenteredText(context, "Start scale using this as",  textPos[0], textPos[1]);
         drawCenteredText(context, "the fundamental frequency?", textPos[0],textPos[1] + 25);
-        drawCenteredText(context, "Press \"Start\" when ready.", textPos[0],textPos[1] + 75);
+        drawCenteredText(context, "Press \"Start Scale\" when ready.", textPos[0],textPos[1] + 75);
 
         if(this.showDragText){
     

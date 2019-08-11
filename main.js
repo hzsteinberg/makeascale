@@ -6,20 +6,6 @@ class MainSimulation{
 
         this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-       this.synthSettings = {
-          oscillator: {
-            type: "sine",
-            volume: -20
-          },
-          envelope: {
-            attack: 0.05,
-            decay: 0,
-            sustain: 1,
-            release: 1.2
-          }
-        }
-
-
         this.showEqualTemperamentLines = false;
         this.highestAllowedInterval = 1.5**30;
 
@@ -247,7 +233,7 @@ class MainSimulation{
     update(){
         let context = this.context;
         const t = Date.now() / 1000;
-        const dt = Math.min(t-this.last_t, 1/15);
+        const dt = Math.min(t-this.last_t, 1/30);
         this.last_t = t;
 
 
@@ -260,8 +246,10 @@ class MainSimulation{
         }
 
 
-        for(var i=0;i<this.objects.length;i++){
-            this.objects[i].update(dt*60);
+        for(let elapsedTimeThisFrame = 0;elapsedTimeThisFrame < dt; elapsedTimeThisFrame += 1/30){
+            for(var i=0;i<this.objects.length;i++){
+                this.objects[i].update(1);
+            }   
         }
 
         this.objects = this.objects.filter( (x)=>!x.isDead);
