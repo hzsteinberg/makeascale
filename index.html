@@ -165,10 +165,14 @@
          <img width='80' height='80' src="iconmonstr-gear-1.svg"></img>
        </div>
         <div id="toggleEqualTemperamentButton" class="btn" onclick="toggleEqualTemperamentLines()"><span>Show equally-spaced equal temperament frequency lines?</span></div>
-        <div id="equalTemperamentSnapButton" class="btn" onclick="snapNotesToEqualTemperament()" style="opacity: 0; pointer-events: none"><span>Snap notes to <b>12</b>-tone equal temperament</span></div>
+        <div id="equalTemperamentSnapButton" class="btn" onclick="snapNotesToEqualTemperament()" style="opacity: 0; pointer-events: none">
+            <span>
+                Snap notes to 
+                <input id="equalTemperamentDivisionsSlider" type="range" min="3" max="31" class="numericSlider" value="12"></input><b>12</b>-tone equal temperament</span>
+        </div>
 
-        
-    </div>
+        <!-- old <div id="equalTemperamentSnapButton" class="btn" onclick="snapNotesToEqualTemperament()" style="opacity: 0; pointer-events: none"><span>Snap notes to <b>12</b>-tone equal temperament</span></div>
+        </div> -->
 
 
     <div id="displayModeBtn" class="overlay btn" onclick="scale.cycleMode()"><span>Change View</span></div>

@@ -83,7 +83,7 @@ function quantizeToEqualTemperament(fundamentalFreq, freqToBeQuantized, numDivis
 
 function snapNotesToEqualTemperament(){
     //format: [Note, freq]
-    let numDivisions = 12;
+    let numDivisions = scale.numOctaveDivisions;
     for(var i=0;i<scale.objects.length;i++){
       if((scale.objects[i]).constructor === Note){
         
@@ -121,6 +121,19 @@ function closeSettingsMenu(){
         document.getElementById("settings").classList.remove("settings-visible");
 }
 
+function updateSlider(evt){
+    //applied to all sliders. updates the next element after the slider to be the number value of the slider
+    let elem = evt.target;
+    let value = elem.value;
+    elem.nextSibling.innerHTML = value;
+}
+
+function updateEqualTemperamentDivisions(event){
+    event.preventDefault();
+    let sliderElem = document.getElementById("equalTemperamentDivisionsSlider");
+    scale.numOctaveDivisions = parseInt(sliderElem.value);
+}
+
 document.addEventListener('DOMContentLoaded', function(){
     let canvas = document.getElementById("canvas");
     canvas.addEventListener('click', closeSettingsMenu, false);
@@ -129,6 +142,17 @@ document.addEventListener('DOMContentLoaded', function(){
     //work around iOS not starting audiocontext until user interaction is played
     document.addEventListener('touchstart', activateIOSSoundHack,false);
     document.addEventListener('touchend', activateIOSSoundHack,false);
+
+
+
+
+    let sliders = document.getElementsByClassName("numericSlider");
+    for(var i=0;i<sliders.length;i++){
+        sliders[i].addEventListener('input', updateSlider,false);
+    }
+
+    document.getElementById('equalTemperamentDivisionsSlider').addEventListener('input' , updateEqualTemperamentDivisions,false);
+
 }, false);
     
 function activateIOSSoundHack(){
