@@ -17,6 +17,7 @@ class MainSimulation{
         this.targetMode = "linear";
         this.currentMode = "linear";
 
+        this.enableEqualTemperamentSnap = false;
         this.numOctaveDivisions = 12;
     }
 
